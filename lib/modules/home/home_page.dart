@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propertyfinder/modules/addProperty/add_property.dart';
 import 'package:propertyfinder/modules/home/home_body.dart';
 
 class Homepage extends StatelessWidget {
@@ -24,12 +25,19 @@ class Homepage extends StatelessWidget {
             title: Text(''),
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.add_box,
-              size: 25,
-            ),
-            title: Text(''),
-          ),
+              icon: IconButton(
+                icon: Icon(
+                  Icons.add_box,
+                  size: 25,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddPropertyMain()));
+                },
+              ),
+              title: Text('')),
         ],
       ),
     );

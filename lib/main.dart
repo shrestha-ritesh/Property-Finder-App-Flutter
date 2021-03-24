@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
+import 'package:propertyfinder/modules/home/home_page.dart';
 import 'modules/login_page.dart';
+
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  dynamic name = FlutterSession().get('name');
+  runApp(MaterialApp(
+    // home: name != '' ? Homepage() : Homepage(),
+    home: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

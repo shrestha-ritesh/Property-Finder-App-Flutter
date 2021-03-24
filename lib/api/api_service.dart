@@ -24,6 +24,7 @@ class ApiService {
     String url = "http://192.168.1.16:3000/v1/users/register"; //api url
 
     final response = await http.post(url, body: requestModel.toJson());
+    print(response);
     try {
       if (response.statusCode == 200 || response.statusCode == 400) {
         return RegisterResponse.fromJson(json.decode(response.body));

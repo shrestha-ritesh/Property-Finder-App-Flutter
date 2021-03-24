@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/models/login_module.dart';
 import 'package:propertyfinder/modules/home/home_page.dart';
@@ -192,6 +193,8 @@ class _LoginState extends State<Login> {
                                   content: Text("Logged in successful"),
                                 );
                                 scaffoldKey.currentState.showSnackBar(snackbar);
+                                print('This is value' + value.name);
+                                FlutterSession().set('token', value.name);
                                 Future.delayed(Duration(seconds: 1), () {
                                   Navigator.push(
                                       context,

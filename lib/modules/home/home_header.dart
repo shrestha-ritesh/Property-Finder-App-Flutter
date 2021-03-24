@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 
 class HomePageHeader extends StatelessWidget {
   const HomePageHeader({
@@ -35,12 +36,23 @@ class HomePageHeader extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Text(
-                  'Hello! User',
+                  'Hello! ',
                   style: Theme.of(context).textTheme.headline5.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                 ),
+                FutureBuilder(
+                    future: FlutterSession().get('token'),
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.hasData ? snapshot.data : 'Loading',
+                        style: Theme.of(context).textTheme.headline5.copyWith(
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      );
+                    }),
                 Spacer(),
                 IconButton(
                   icon: Icon(
