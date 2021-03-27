@@ -194,7 +194,8 @@ class _LoginState extends State<Login> {
                                 );
                                 scaffoldKey.currentState.showSnackBar(snackbar);
                                 print('This is value' + value.name);
-                                FlutterSession().set('token', value.name);
+                                FlutterSession().set('name', value.name);
+                                FlutterSession().set('id', value.id);
                                 Future.delayed(Duration(seconds: 1), () {
                                   Navigator.push(
                                       context,
