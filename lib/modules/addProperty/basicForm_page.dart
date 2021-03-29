@@ -5,11 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/config/config.dart';
+import 'package:propertyfinder/models/add_property_model.dart';
+// import 'package:propertyfinder/models/property_model.dart';
 import '../../appBar.dart';
+import '../../models/property_status.dart';
 
 class BasicPageForm extends StatefulWidget {
   @override
@@ -17,6 +23,31 @@ class BasicPageForm extends StatefulWidget {
 }
 
 class _BasicPageFormState extends State<BasicPageForm> {
+  //Implementing controller:
+  TextEditingController propertyaddress = TextEditingController();
+  TextEditingController builtUpArea = TextEditingController();
+  TextEditingController totalArea = TextEditingController();
+  TextEditingController roadDistance = TextEditingController();
+  TextEditingController builtDate = TextEditingController();
+  TextEditingController totalFloors = TextEditingController();
+  TextEditingController rooms = TextEditingController();
+  TextEditingController bathroom = TextEditingController();
+  TextEditingController kitchen = TextEditingController();
+  TextEditingController garage = TextEditingController();
+  TextEditingController livingroom = TextEditingController();
+  TextEditingController propertyTitle = TextEditingController();
+  TextEditingController propertyDescription = TextEditingController();
+  TextEditingController propertyPrice = TextEditingController();
+  TextEditingController bedroom = TextEditingController();
+
+  // AddProperty addPropertyModel = AddProperty();
+
+  AddProperty addProperty = AddProperty();
+  var session = FlutterSession();
+
+  //Declaring global Key for form submission
+  GlobalKey<FormState> globalFormKey = new GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 //Easy loading
   Timer _timer;
 
@@ -94,14 +125,37 @@ class _BasicPageFormState extends State<BasicPageForm> {
   // }
 
   //
-  int selectRadio;
+  String selectRadio = 'Sale';
+  String chosenPropertyType;
+  String chosenBuiltArea;
+  String chosenTotalArea;
+  String propertyFace;
+  String roadDistanceType;
+  String roadType;
   String chosenValue;
+  List propertyType = ["Land", "Business", "Apartment", "House"];
+  List propertyMeasurementType = [
+    "Anna",
+    "Ropani",
+    "Sq Feet",
+    "Sq Meter",
+    "Daam",
+    "Paisa",
+    "Bigha",
+    "Kattha",
+    "Dhur",
+    "Haat",
+    "Acres"
+  ];
   List dropdownContents = ["Item 1", "Item 2", "Item 3", "Item 5"];
+  List propertyFaceList = ["East", "West", "North", "South"];
+  List roadTypeList = ["Gravelled", "Paved", "Black Toppe", "Alley"];
+  List measurementList = ["feet", "meter"];
+
   @override
   void intitState() {
     super.initState();
-    selectRadio = 0;
-
+    selectRadio = '';
     //For easy loading (can be removed mark *)
     EasyLoading.addStatusCallback((status) {
       print('EasyLoading Status $status');
@@ -112,7 +166,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
     //EasyLoading.showSuccess('Use in initState');
   }
 
-  setSelectedRadio(int val) {
+  setSelectedRadio(String val) {
     setState(() {
       selectRadio = val;
     });
@@ -120,6 +174,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: homeAppBar(context, "Add Property"),
       body: SingleChildScrollView(
         child: Column(
@@ -128,36 +183,68 @@ class _BasicPageFormState extends State<BasicPageForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Stepper(
-                    steps: _stepper(),
-                    physics: ClampingScrollPhysics(),
-                    currentStep: this._currentStep,
-                    onStepTapped: (step) {
-                      setState(() {
-                        this._currentStep = step;
-                      });
-                    },
-                    onStepContinue: () {
-                      //It transfers to another
-                      setState(() {
-                        if (this._currentStep < this._stepper().length - 1) {
-                          this._currentStep = this._currentStep + 1;
-                        } else {
-                          //Main Functionality for end of the form
-                          print('Complete');
-                          _saveImage();
-                        }
-                      });
-                    },
-                    onStepCancel: () {
-                      setState(() {
-                        if (this._currentStep > 0) {
-                          this._currentStep = this._currentStep - 1;
-                        } else {
-                          this._currentStep = 0;
-                        }
-                      });
-                    },
+                  Form(
+                    key: globalFormKey,
+                    child: Stepper(
+                      steps: _stepper(),
+                      physics: ClampingScrollPhysics(),
+                      currentStep: this._currentStep,
+                      onStepTapped: (step) {
+                        setState(() {
+                          this._currentStep = step;
+                        });
+                      },
+                      onStepContinue: () {
+                        //It transfers to another
+                        setState(() {
+                          if (this._currentStep < this._stepper().length - 1) {
+                            this._currentStep = this._currentStep + 1;
+                          } else {
+                            //Main Functionality for end of the form
+                            print('Complete');
+
+                            //condition for posting the data in backend
+                            if (validate()) {
+                              ApiService apiService = new ApiService();
+                              apiService.addproperty(addProperty).then((value) {
+                                if (value.message.isNotEmpty) {
+                                  session.set("propertyid", value.propertyid);
+                                  print('Propertyid');
+                                  if (value.success == 1) {
+                                    _saveImage();
+                                    print('Test');
+                                  } else {
+                                    print(value.error);
+                                  }
+                                  final snackbar = SnackBar(
+                                    content: Text("Sucessfully Added !!"),
+                                  );
+                                  scaffoldKey.currentState
+                                      .showSnackBar(snackbar);
+                                  print(value.message);
+                                } else {
+                                  final snackbar = SnackBar(
+                                    content: Text(value.error),
+                                  );
+                                  scaffoldKey.currentState
+                                      .showSnackBar(snackbar);
+                                }
+                              });
+                            }
+                            // _saveImage();
+                          }
+                        });
+                      },
+                      onStepCancel: () {
+                        setState(() {
+                          if (this._currentStep > 0) {
+                            this._currentStep = this._currentStep - 1;
+                          } else {
+                            this._currentStep = 0;
+                          }
+                        });
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -172,7 +259,10 @@ class _BasicPageFormState extends State<BasicPageForm> {
   List<Step> _stepper() {
     List<Step> _steps = [
       Step(
-        title: Text('Basic Details'),
+        title: Text(
+          'Basic Details',
+          style: TextStyle(fontSize: 17),
+        ),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -190,7 +280,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Radio(
-                  value: 1,
+                  value: 'Sale',
                   groupValue: selectRadio,
                   activeColor: Colors.black,
                   onChanged: (val) {
@@ -203,7 +293,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                   width: 20,
                 ),
                 Radio(
-                  value: 2,
+                  value: "Rent",
                   groupValue: selectRadio,
                   activeColor: Colors.black,
                   onChanged: (val) {
@@ -216,7 +306,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                   width: 20,
                 ),
                 Radio(
-                  value: 3,
+                  value: "Lease",
                   groupValue: selectRadio,
                   activeColor: Colors.black,
                   onChanged: (val) {
@@ -245,18 +335,20 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                   child: Center(
-                    child: DropdownButton(
-                      value: chosenValue,
+                    child: DropdownButtonFormField(
+                      value: chosenPropertyType,
                       onChanged: (drpVal) {
                         setState(() {
-                          chosenValue = drpVal;
+                          chosenPropertyType = drpVal;
                         });
                       },
+                      validator: (value) =>
+                          value == null ? 'field required' : null,
                       dropdownColor: Colors.grey,
                       hint: Text("Select any type"),
                       isExpanded: true,
                       //Adding the item of the list
-                      items: dropdownContents.map((valueItem) {
+                      items: propertyType.map((valueItem) {
                         return DropdownMenuItem(
                           value: valueItem,
                           child: Text(valueItem),
@@ -284,6 +376,9 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 ),
                 TextFormField(
                   keyboardType: TextInputType.text,
+                  controller: propertyaddress,
+                  validator: (input) =>
+                      input == "" ? "Please fill the field !" : null,
                   decoration: InputDecoration(
                     // labelText: "Prp",
                     // labelStyle: TextStyle(
@@ -323,7 +418,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                   padding:
                       const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                   child: Center(
-                    child: DropdownButton(
+                    child: DropdownButtonFormField(
                       value: chosenValue,
                       onChanged: (drpVal) {
                         setState(() {
@@ -362,7 +457,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                   padding:
                       const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                   child: Center(
-                    child: DropdownButton(
+                    child: DropdownButtonFormField(
                       value: chosenValue,
                       onChanged: (drpVal) {
                         setState(() {
@@ -390,7 +485,10 @@ class _BasicPageFormState extends State<BasicPageForm> {
         state: StepState.editing,
       ),
       Step(
-        title: Text('Property Details'),
+        title: Text(
+          'Property Details',
+          style: TextStyle(fontSize: 17),
+        ),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -406,6 +504,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 Flexible(
                   child: TextFormField(
                     decoration: InputDecoration(labelText: "e.g. 12"),
+                    controller: builtUpArea,
                   ),
                 ),
                 SizedBox(
@@ -413,11 +512,13 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 ),
                 Container(
                   width: 100,
-                  child: DropdownButton(
-                    value: chosenValue,
+                  child: DropdownButtonFormField(
+                    value: chosenBuiltArea,
+                    validator: (value) =>
+                        value == null ? 'field required' : null,
                     onChanged: (drpVal) {
                       setState(() {
-                        chosenValue = drpVal;
+                        chosenBuiltArea = drpVal;
                       });
                     },
                     dropdownColor: Colors.grey,
@@ -425,7 +526,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                     hint: Text("Anna"),
                     isExpanded: true,
                     //Adding the item of the list
-                    items: dropdownContents.map((valueItem) {
+                    items: propertyMeasurementType.map((valueItem) {
                       return DropdownMenuItem(
                         value: valueItem,
                         child: Text(valueItem),
@@ -450,6 +551,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 Flexible(
                   child: TextFormField(
                     decoration: InputDecoration(labelText: "e.g. 12"),
+                    controller: totalArea,
                   ),
                 ),
                 SizedBox(
@@ -457,11 +559,13 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 ),
                 Container(
                   width: 100,
-                  child: DropdownButton(
-                    value: chosenValue,
+                  child: DropdownButtonFormField(
+                    value: chosenTotalArea,
+                    validator: (value) =>
+                        value == null ? 'field required' : null,
                     onChanged: (drpVal) {
                       setState(() {
-                        chosenValue = drpVal;
+                        chosenTotalArea = drpVal;
                       });
                     },
                     dropdownColor: Colors.grey,
@@ -469,13 +573,47 @@ class _BasicPageFormState extends State<BasicPageForm> {
                     hint: Text("Anna"),
                     isExpanded: true,
                     //Adding the item of the list
-                    items: dropdownContents.map((valueItem) {
+                    items: propertyMeasurementType.map((valueItem) {
                       return DropdownMenuItem(
                         value: valueItem,
                         child: Text(valueItem),
                       );
                     }).toList(),
                   ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              'Property Face: ',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Column(
+              children: [
+                DropdownButtonFormField(
+                  value: propertyFace,
+                  validator: (value) => value == null ? 'field required' : null,
+                  onChanged: (drpVal) {
+                    setState(() {
+                      propertyFace = drpVal;
+                    });
+                  },
+                  dropdownColor: Colors.grey,
+                  iconEnabledColor: Colors.black,
+                  hint: Text("PRoperty Face"),
+                  isExpanded: true,
+                  //Adding the item of the list
+                  items: propertyFaceList.map((valueItem) {
+                    return DropdownMenuItem(
+                      value: valueItem,
+                      child: Text(valueItem),
+                    );
+                  }).toList(),
                 ),
               ],
             ),
@@ -491,41 +629,9 @@ class _BasicPageFormState extends State<BasicPageForm> {
             ),
             Column(
               children: [
-                DropdownButton(
-                  value: chosenValue,
-                  onChanged: (drpVal) {
-                    setState(() {
-                      chosenValue = drpVal;
-                    });
-                  },
-                  dropdownColor: Colors.grey,
-                  iconEnabledColor: Colors.black,
-                  hint: Text("PRoperty Face"),
-                  isExpanded: true,
-                  //Adding the item of the list
-                  items: dropdownContents.map((valueItem) {
-                    return DropdownMenuItem(
-                      value: valueItem,
-                      child: Text(valueItem),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Total Area: ',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Column(
-              children: [
                 TextFormField(
                   decoration: InputDecoration(hintText: "eg. 10 ft"),
+                  controller: roadDistance,
                 ),
                 SizedBox(
                   height: 10,
@@ -537,11 +643,13 @@ class _BasicPageFormState extends State<BasicPageForm> {
                         color: Colors.black12,
                       ),
                       width: 120,
-                      child: DropdownButton(
-                        value: chosenValue,
+                      child: DropdownButtonFormField(
+                        value: roadDistanceType,
+                        validator: (value) =>
+                            value == null ? 'field required' : null,
                         onChanged: (drpVal) {
                           setState(() {
-                            chosenValue = drpVal;
+                            roadDistanceType = drpVal;
                           });
                         },
                         dropdownColor: Colors.grey,
@@ -549,7 +657,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                         hint: Text("ft"),
                         isExpanded: true,
                         //Adding the item of the list
-                        items: dropdownContents.map((valueItem) {
+                        items: measurementList.map((valueItem) {
                           return DropdownMenuItem(
                             value: valueItem,
                             child: Text(valueItem),
@@ -565,11 +673,13 @@ class _BasicPageFormState extends State<BasicPageForm> {
                         color: Colors.black12,
                       ),
                       width: 150,
-                      child: DropdownButton(
-                        value: chosenValue,
+                      child: DropdownButtonFormField(
+                        value: roadType,
+                        validator: (value) =>
+                            value == null ? 'field required' : null,
                         onChanged: (drpVal) {
                           setState(() {
-                            chosenValue = drpVal;
+                            roadType = drpVal;
                           });
                         },
                         dropdownColor: Colors.grey,
@@ -577,7 +687,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                         hint: Text("Gravelled"),
                         isExpanded: true,
                         //Adding the item of the list
-                        items: dropdownContents.map((valueItem) {
+                        items: roadTypeList.map((valueItem) {
                           return DropdownMenuItem(
                             value: valueItem,
                             child: Text(valueItem),
@@ -607,6 +717,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
                     Flexible(
                       child: TextFormField(
                         decoration: InputDecoration(labelText: "2072"),
+                        keyboardType: TextInputType.datetime,
+                        controller: builtDate,
                       ),
                     ),
                     SizedBox(
@@ -616,6 +728,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
                       width: 150,
                       child: TextFormField(
                         decoration: InputDecoration(labelText: "Total Floors"),
+                        keyboardType: TextInputType.number,
+                        controller: totalFloors,
                       ),
                     ),
                   ],
@@ -636,6 +750,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
                     Flexible(
                       child: TextFormField(
                         decoration: InputDecoration(labelText: "Rooms"),
+                        keyboardType: TextInputType.number,
+                        controller: rooms,
                       ),
                     ),
                     SizedBox(
@@ -645,6 +761,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
                       width: 150,
                       child: TextFormField(
                         decoration: InputDecoration(labelText: "Bathroom"),
+                        keyboardType: TextInputType.number,
+                        controller: bathroom,
                       ),
                     ),
                   ],
@@ -654,6 +772,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
                     Flexible(
                       child: TextFormField(
                         decoration: InputDecoration(labelText: "Kitchen"),
+                        keyboardType: TextInputType.number,
+                        controller: kitchen,
                       ),
                     ),
                     SizedBox(
@@ -663,6 +783,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
                       width: 150,
                       child: TextFormField(
                         decoration: InputDecoration(labelText: "Garage"),
+                        keyboardType: TextInputType.number,
+                        controller: garage,
                       ),
                     ),
                   ],
@@ -673,6 +795,19 @@ class _BasicPageFormState extends State<BasicPageForm> {
                       width: 150,
                       child: TextFormField(
                         decoration: InputDecoration(labelText: "Living Room"),
+                        keyboardType: TextInputType.number,
+                        controller: livingroom,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      width: 130,
+                      child: TextFormField(
+                        decoration: InputDecoration(labelText: "Bed Room"),
+                        keyboardType: TextInputType.number,
+                        controller: bedroom,
                       ),
                     ),
                   ],
@@ -684,27 +819,30 @@ class _BasicPageFormState extends State<BasicPageForm> {
         isActive: _currentStep >= 1,
         state: StepState.editing,
       ),
-      Step(
-        title: Text('Property Amenitites'),
-        content: Column(
-          children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(labelText: "New property"),
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: "Text property"),
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: "Mobile No"),
-            ),
-          ],
-        ),
-        isActive: _currentStep >= 2,
-        state: StepState.editing,
-      ),
+      // Step(
+      //   title: Text('Property Amenitites'),
+      //   content: Column(
+      //     children: <Widget>[
+      //       TextFormField(
+      //         decoration: InputDecoration(labelText: "New property"),
+      //       ),
+      //       TextFormField(
+      //         decoration: InputDecoration(labelText: "Text property"),
+      //       ),
+      //       TextFormField(
+      //         decoration: InputDecoration(labelText: "Mobile No"),
+      //       ),
+      //     ],
+      //   ),
+      //   isActive: _currentStep >= 2,
+      //   state: StepState.editing,
+      // ),
       //Codes for adding images using milti image picker
       Step(
-        title: Text('Property Images'),
+        title: Text(
+          'Property Images',
+          style: TextStyle(fontSize: 17),
+        ),
         content: Container(
           child: Column(
             children: <Widget>[
@@ -732,26 +870,32 @@ class _BasicPageFormState extends State<BasicPageForm> {
             ],
           ),
         ),
-        isActive: _currentStep >= 3,
+        isActive: _currentStep >= 2,
         state: StepState.editing,
       ),
       Step(
-        title: Text('Property Pricing'),
+        title: Text(
+          'Property Pricing',
+          style: TextStyle(fontSize: 17),
+        ),
         content: Column(
           children: <Widget>[
             TextFormField(
               decoration: InputDecoration(labelText: "Property Title"),
+              controller: propertyTitle,
             ),
             TextFormField(
               decoration: InputDecoration(labelText: "Property Description"),
               maxLines: 5,
+              controller: propertyDescription,
             ),
             TextFormField(
               decoration: InputDecoration(labelText: "Property Price"),
+              controller: propertyPrice,
             ),
           ],
         ),
-        isActive: _currentStep >= 4,
+        isActive: _currentStep >= 3,
         state: StepState.editing,
       ),
     ];
@@ -759,6 +903,44 @@ class _BasicPageFormState extends State<BasicPageForm> {
     // Expanded(
     //   child: buildGridView(),
     // ),
+  }
+
+  //Setting the data in the addproperty model:
+  void sendValidData() {
+    addProperty = AddProperty(
+      property_name: propertyTitle.text,
+      property_description: propertyDescription.text,
+      property_price: propertyPrice.text,
+      property_status: selectRadio,
+      property_type: chosenPropertyType,
+      property_address: propertyaddress.text,
+      property_city: chosenValue,
+      property_located_area: chosenValue,
+      built_up_area: builtUpArea.text + " " + chosenBuiltArea,
+      property_total_area: totalArea.text + " " + chosenTotalArea,
+      property_face: propertyFace,
+      road_distance: roadDistance.text + " " + roadDistanceType,
+      road_type: roadType,
+      bathroom: bathroom.text,
+      rooms: rooms.text,
+      kitchen: kitchen.text,
+      living_room: livingroom.text,
+      parking: garage.text,
+      built_year: builtDate.text,
+      total_floors: totalFloors.text,
+      bedroom: bedroom.text,
+    );
+  }
+
+  //Validation of texfields
+  bool validate() {
+    final form = globalFormKey.currentState;
+    if (form.validate()) {
+      sendValidData();
+      // form.save();
+      return true;
+    }
+    return false;
   }
 
   //SAVE IMAGE FOR THE BACKEND
@@ -779,7 +961,13 @@ class _BasicPageFormState extends State<BasicPageForm> {
         EasyLoading.show(status: 'uploading...');
 
         //Image post
-        var response = await dio.post(UPLOAD_URL, data: formData);
+        String token = await FlutterSession().get("token");
+        int propID = await FlutterSession().get("propertyid");
+        var response = await dio.post(UPLOAD_URL + "/$propID",
+            data: formData,
+            options: Options(
+              headers: {"authorization": "$token"},
+            ));
         if (response.statusCode == 200) {
           EasyLoading.showSuccess('Successfully Stored!');
           print(response.data);

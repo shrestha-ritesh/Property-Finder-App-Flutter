@@ -43,7 +43,7 @@ class HomePageHeader extends StatelessWidget {
                       ),
                 ),
                 FutureBuilder(
-                    future: FlutterSession().get('token'),
+                    future: FlutterSession().get('name'),
                     builder: (context, snapshot) {
                       return Text(
                         snapshot.hasData ? snapshot.data : 'Loading',

@@ -10,7 +10,8 @@ class LoginResponseModel {
     return LoginResponseModel(
         token: json["token"] != null ? json["token"] : "",
         error: json["error"] != null ? json["error"] : "",
-        name: json["name"] != null ? json["name"] : "");
+        name: json["name"] != null ? json["name"] : "",
+        id: json["id"] != null ? json["id"] : "");
   }
 }
 

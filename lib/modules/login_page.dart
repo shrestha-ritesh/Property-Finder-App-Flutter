@@ -17,6 +17,8 @@ class _LoginState extends State<Login> {
   //variable for hiding the password
   bool hidePassword = true;
   LoginRequestModel loginRequestModel;
+
+  var session = FlutterSession();
   bool isApiCalled = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -193,9 +195,10 @@ class _LoginState extends State<Login> {
                                   content: Text("Logged in successful"),
                                 );
                                 scaffoldKey.currentState.showSnackBar(snackbar);
-                                print('This is value' + value.name);
-                                FlutterSession().set('name', value.name);
-                                FlutterSession().set('id', value.id);
+                                print('This is value' + value.id.toString());
+                                session.set('name', value.name);
+                                session.set('token', value.token);
+                                session.set('id', value.id);
                                 Future.delayed(Duration(seconds: 1), () {
                                   Navigator.push(
                                       context,
