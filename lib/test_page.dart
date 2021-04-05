@@ -17,7 +17,7 @@ class _TestPageState extends State<TestPage> {
   //For getting data from the server:
 
   Future<String> getImageData() async {
-    final String url = "http://10.0.2.2:3000/v1/uploadImages/getimage/24";
+    final String url = "http://10.0.2.2:3000/v1/uploadImages/getimage/25";
     var response = await http.get(
       //Encode the url
       Uri.encodeFull(url),
@@ -28,7 +28,7 @@ class _TestPageState extends State<TestPage> {
       if (response.statusCode == 200 || response.statusCode == 400) {
         setState(() {
           var convertDataToJson = json.decode(response.body);
-          imageNameList = convertDataToJson['image_url'];
+          imageNameList = convertDataToJson['data'];
         });
       }
     } catch (e) {
