@@ -1,8 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
+import 'package:propertyfinder/api/api_get.dart';
+import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/models/property_model.dart';
 import 'package:propertyfinder/modules/listview_page/listview.dart';
 
-class PropertyCarousel extends StatelessWidget {
+// class PropertyCarousel extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return
+//   }
+// }
+
+class PropertyCarousel extends StatefulWidget {
+  @override
+  _PropertyCarouselState createState() => _PropertyCarouselState();
+}
+
+class _PropertyCarouselState extends State<PropertyCarousel> {
+  List<Datum> _property;
+  bool _loading;
+  var session = FlutterSession();
+
+  @override
+  void initState() {
+    _loading = true;
+    super.initState();
+    Services.getProperty().then((property) {
+      setState(() {
+        _property = property;
+        _loading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -16,7 +47,7 @@ class PropertyCarousel extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Top Properties',
+                'Featured Building',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -25,6 +56,8 @@ class PropertyCarousel extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   print('This is see more');
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ListviewPage()));
                 },
                 child: Text(
                   'See more',
@@ -38,31 +71,35 @@ class PropertyCarousel extends StatelessWidget {
             ],
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ListviewPage()));
-          },
-          child: Container(
-            height: 280,
-            // color: Colors.grey,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: propertyList.length,
-              itemBuilder: (BuildContext context, int index) {
-                PropertyLists propertyLists = propertyList[index];
-                return Container(
+        Container(
+          height: 330,
+          // color: Colors.grey,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _property.length == null ? 0 : _property.length,
+            itemBuilder: (BuildContext context, int index) {
+              Datum property = _property[index];
+              PropertyLists propertyLists = propertyList[index];
+              return GestureDetector(
+                onTap: () {
+                  print("Tap");
+                  session.set("property_id", property.propertyId);
+                  session.set("user_id", property.userId);
+                  print("Property_ID ==>" + property.propertyId.toString());
+                  print("User ==> " + property.userId.toString());
+                },
+                child: Container(
                   margin: EdgeInsets.all(10),
-                  width: 280,
+                  width: 300,
                   // color: Colors.blueGrey[600],
                   child: Stack(
                     alignment: Alignment.topCenter,
                     children: <Widget>[
                       Positioned(
-                        bottom: 2.5,
+                        bottom: 0,
                         child: Container(
-                          height: 100,
-                          width: 280,
+                          height: 148,
+                          width: 300,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -71,33 +108,108 @@ class PropertyCarousel extends StatelessWidget {
                                 color: Colors.black26,
                                 offset: Offset(0.0, 2.0),
                                 blurRadius: 6.0,
-                              ),
+                              )
                             ],
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(9.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                // Text('${propertyLists.price.length} price'),
                                 Text(
-                                  propertyLists.price,
+                                  property.propertyName,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                Text(
+                                  "Rs." + property.propertyPrice.toString(),
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                SizedBox(
+                                  height: 2,
+                                ),
                                 Text(
                                   propertyLists.propertyAddress,
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
                                   ),
                                 ),
-                                Text(
-                                  propertyLists.propertyDescription,
-                                  style: TextStyle(color: Colors.grey),
+                                // Text(
+                                //   propertyLists.propertyDescription,
+                                //   style: TextStyle(color: Colors.grey),
+                                // ),
+                                SizedBox(
+                                    height: 30,
+                                    child: Divider(color: Colors.black)),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.bathtub,
+                                      color: Colors.black,
+                                      size: 20,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "12",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Icon(
+                                      Icons.house,
+                                      color: Colors.black,
+                                      size: 20,
+                                    ),
+                                    Text(
+                                      "12",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Icon(
+                                      Icons.house,
+                                      color: Colors.black,
+                                      size: 20,
+                                    ),
+                                    Text(
+                                      "12",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Icon(
+                                      Icons.car_rental,
+                                      color: Colors.black,
+                                      size: 20,
+                                    ),
+                                    Text(
+                                      "12",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 )
                               ],
                             ),
@@ -120,9 +232,9 @@ class PropertyCarousel extends StatelessWidget {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10.0),
                               child: Image(
-                                height: 160.0,
+                                height: 180.0,
                                 width: 320.0,
-                                image: AssetImage(propertyLists.imageUrl),
+                                image: NetworkImage(property.thumbnailImage),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -133,14 +245,14 @@ class PropertyCarousel extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    propertyLists.propertyType,
+                                    property.propertyType,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
                                   Text(
-                                    propertyLists.propertyAvailableFor,
+                                    property.propertyStatus,
                                     style: TextStyle(color: Colors.white),
                                   )
                                 ],
@@ -151,9 +263,9 @@ class PropertyCarousel extends StatelessWidget {
                       ),
                     ],
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ],

@@ -44,4 +44,11 @@ List<PropertyLists> propertyList = [
       propertyDescription: 'This is the description of the property 4.',
       propertyType: 'Building',
       propertyAvailableFor: 'RENT'),
+  PropertyLists(
+      imageUrl: 'images/category2.jpg',
+      price: 'Rs 10000',
+      propertyAddress: 'Perth',
+      propertyDescription: 'This is the description of the property 4.',
+      propertyType: 'Building',
+      propertyAvailableFor: 'RENT'),
 ];

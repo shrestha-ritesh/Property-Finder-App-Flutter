@@ -1,23 +1,39 @@
 class AddProperty {
+  // ignore: non_constant_identifier_names
   String property_name;
+  // ignore: non_constant_identifier_names
   String property_description;
+  // ignore: non_constant_identifier_names
   String property_price;
+  // ignore: non_constant_identifier_names
   String property_status;
   String property_type;
+  // ignore: non_constant_identifier_names
   String property_address;
+  // ignore: non_constant_identifier_names
   String property_city;
+  // ignore: non_constant_identifier_names
   String property_located_area;
+  // ignore: non_constant_identifier_names
   String built_up_area;
+  // ignore: non_constant_identifier_names
   String property_total_area;
+  // ignore: non_constant_identifier_names
   String property_face;
+  // ignore: non_constant_identifier_names
   String road_distance;
+  // ignore: non_constant_identifier_names
   String road_type;
+  // ignore: non_constant_identifier_names
   String bedroom;
   String rooms;
   String kitchen;
+  // ignore: non_constant_identifier_names
   String living_room;
   String parking;
+  // ignore: non_constant_identifier_names
   String built_year;
+  // ignore: non_constant_identifier_names
   String total_floors;
   String bathroom;
 

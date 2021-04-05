@@ -1,21 +1,22 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/config/config.dart';
 import 'package:propertyfinder/models/add_property_model.dart';
+import 'package:propertyfinder/test_page.dart';
 // import 'package:propertyfinder/models/property_model.dart';
 import '../../appBar.dart';
-import '../../models/property_status.dart';
 
 class BasicPageForm extends StatefulWidget {
   @override
@@ -23,6 +24,9 @@ class BasicPageForm extends StatefulWidget {
 }
 
 class _BasicPageFormState extends State<BasicPageForm> {
+  //For Single image picker:
+  File _image;
+  final picker = ImagePicker();
   //Implementing controller:
   TextEditingController propertyaddress = TextEditingController();
   TextEditingController builtUpArea = TextEditingController();
@@ -70,6 +74,22 @@ class _BasicPageFormState extends State<BasicPageForm> {
   Dio dio = Dio();
 
   Widget buildGridView() {
+    return GridView.count(
+      crossAxisCount: 3,
+      crossAxisSpacing: 7,
+      mainAxisSpacing: 5,
+      children: List.generate(images.length, (index) {
+        Asset asset = images[index];
+        return AssetThumb(
+          asset: asset,
+          width: 120,
+          height: 120,
+        );
+      }),
+    );
+  }
+
+  Widget buildGridView1() {
     return GridView.count(
       crossAxisCount: 3,
       crossAxisSpacing: 7,
@@ -172,6 +192,14 @@ class _BasicPageFormState extends State<BasicPageForm> {
     });
   }
 
+  // For Selecting image function:
+  Future selectImage() async {
+    var pickedImage = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(pickedImage.path);
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
@@ -212,6 +240,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
                                   print('Propertyid');
                                   if (value.success == 1) {
                                     _saveImage();
+                                    //For single content upload
+                                    singleUpload();
                                     print('Test');
                                   } else {
                                     print(value.error);
@@ -222,6 +252,11 @@ class _BasicPageFormState extends State<BasicPageForm> {
                                   scaffoldKey.currentState
                                       .showSnackBar(snackbar);
                                   print(value.message);
+                                  //Navigate to another page
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => TestPage()));
                                 } else {
                                   final snackbar = SnackBar(
                                     content: Text(value.error),
@@ -230,6 +265,12 @@ class _BasicPageFormState extends State<BasicPageForm> {
                                       .showSnackBar(snackbar);
                                 }
                               });
+                            } else {
+                              // final snackbar = SnackBar(
+                              //   content: Text("Please fill all the values  !"),
+                              // );
+                              // scaffoldKey.currentState.showSnackBar(snackbar);
+                              showAlertDialog(context);
                             }
                             // _saveImage();
                           }
@@ -846,6 +887,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
         content: Container(
           child: Column(
             children: <Widget>[
+              //=========================================
               Text("Choose any photos for Property: "),
               FlatButton.icon(
                 onPressed: loadAssets,
@@ -858,9 +900,11 @@ class _BasicPageFormState extends State<BasicPageForm> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Container(
-                  height: 250,
-                  child: buildGridView(),
+                child: SingleChildScrollView(
+                  child: Container(
+                    height: 150,
+                    child: buildGridView1(),
+                  ),
                 ),
               ),
               // RaisedButton(
@@ -892,6 +936,28 @@ class _BasicPageFormState extends State<BasicPageForm> {
             TextFormField(
               decoration: InputDecoration(labelText: "Property Price"),
               controller: propertyPrice,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            //For sinlge eimage picker for the main image of the post
+            FlatButton.icon(
+              onPressed: () {
+                selectImage();
+              },
+              icon: Icon(Icons.image),
+              label: Text('Select Main Image'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              color: Colors.black12,
+            ),
+            SizedBox(height: 20),
+            Container(
+              width: 350,
+              child: _image == null
+                  ? Text('Please select image!')
+                  : Image.file(_image),
             ),
           ],
         ),
@@ -941,6 +1007,63 @@ class _BasicPageFormState extends State<BasicPageForm> {
       return true;
     }
     return false;
+  }
+
+  //Alert dialog
+  showAlertDialog(BuildContext dialogContext) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text(
+        "Cancel",
+        style: TextStyle(
+          color: Colors.red,
+        ),
+      ),
+      onPressed: () {},
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Continue"),
+      onPressed: () {
+        Navigator.of(dialogContext).pop();
+      },
+    );
+    // set up the AlertDialog
+    CupertinoAlertDialog alert = CupertinoAlertDialog(
+      title: Text("AlertDialog"),
+      content: Text(
+          "Would you like to continue learning how to use Flutter alerts?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //Saving single Image file in server:
+  Future singleUpload() async {
+    String filename = _image.path.split('/').last;
+    FormData formData = new FormData.fromMap({
+      "image": await MultipartFile.fromFile(_image.path,
+          filename: filename, contentType: new MediaType('image', 'png')),
+    });
+    int propID = await FlutterSession().get("propertyid");
+    String token = await FlutterSession().get("token");
+    Response response = await dio.post(SINGLE_UPLOAD + "/$propID",
+        data: formData,
+        options: Options(
+          headers: {"authorization": "$token"},
+        ));
+    if (response.statusCode == 200) {
+      EasyLoading.showSuccess('Successfully Stored single image!');
+      print(response.data);
+    }
   }
 
   //SAVE IMAGE FOR THE BACKEND

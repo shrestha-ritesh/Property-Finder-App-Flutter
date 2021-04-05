@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:propertyfinder/modules/addProperty/add_property.dart';
 import 'package:propertyfinder/modules/home/home_body.dart';
 
+import '../../test_page.dart';
+
 class Homepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -18,12 +20,17 @@ class Homepage extends StatelessWidget {
               ),
               title: Text('')),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.star,
-              size: 25,
-            ),
-            title: Text(''),
-          ),
+              icon: IconButton(
+                icon: Icon(
+                  Icons.star,
+                  size: 25,
+                ),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => TestPage()));
+                },
+              ),
+              title: Text('')),
           BottomNavigationBarItem(
               icon: IconButton(
                 icon: Icon(
