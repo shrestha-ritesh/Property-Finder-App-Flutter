@@ -4,7 +4,19 @@ import 'package:propertyfinder/models/property_attributes_model.dart';
 import 'package:propertyfinder/modules/listview_page/property_lists.dart';
 import '../filter_section.dart';
 
-class ListviewPage extends StatelessWidget {
+// class ListviewPage extends StatelessWidget {
+//   List<Property> properties = getPropertyDetails();
+//   @override
+//   Widget build(BuildContext context) {
+
+// }
+
+class ListViewPage extends StatefulWidget {
+  @override
+  _ListViewPageState createState() => _ListViewPageState();
+}
+
+class _ListViewPageState extends State<ListViewPage> {
   List<Property> properties = getPropertyDetails();
   @override
   Widget build(BuildContext context) {
@@ -149,7 +161,7 @@ class ListviewPage extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   Text(
-                    '24',
+                    properties.length.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 24,
@@ -236,8 +248,12 @@ class ListviewPage extends StatelessWidget {
   Widget propertyBuild(Property property, int index, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => PropertyListsView()));
+        Navigator.push(
+            context,
+            // MaterialPageRoute(
+            //     builder: (context) => PropertyListsView(property: property)));
+            MaterialPageRoute(
+                builder: (context) => PropertyListsView(property: property)));
       },
       child: Card(
         margin: EdgeInsets.only(bottom: 24),

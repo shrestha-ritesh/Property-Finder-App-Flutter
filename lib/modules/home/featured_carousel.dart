@@ -17,7 +17,7 @@ class FeaturedCarousel extends StatefulWidget {
 }
 
 class _FeaturedCarouselState extends State<FeaturedCarousel> {
-  List<Datum> _property;
+  List<Datum> _property = [];
   bool _loading;
   var session = FlutterSession();
 
@@ -45,7 +45,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Featured Building',
+                'Featured Building 🏨',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -55,7 +55,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                 onTap: () {
                   print('This is see more');
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ListviewPage()));
+                      MaterialPageRoute(builder: (context) => ListViewPage()));
                 },
                 child: Text(
                   'See more',
@@ -74,7 +74,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
           // color: Colors.grey,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: _property.length == null ? 0 : _property.length,
+            itemCount: _property.length == null ? 0 : 3,
             itemBuilder: (BuildContext context, int index) {
               Datum property = _property[index];
               PropertyLists propertyLists = propertyList[index];
@@ -232,7 +232,7 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                               child: Image(
                                 height: 180.0,
                                 width: 320.0,
-                                image: NetworkImage(property.thumbnailImage),
+                                image: NetworkImage(property.images[0]),
                                 fit: BoxFit.cover,
                               ),
                             ),

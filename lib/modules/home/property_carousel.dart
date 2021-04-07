@@ -18,7 +18,7 @@ class PropertyCarousel extends StatefulWidget {
 }
 
 class _PropertyCarouselState extends State<PropertyCarousel> {
-  List<Datum> _property;
+  List<Datum> _property = [];
   bool _loading;
   var session = FlutterSession();
 
@@ -47,7 +47,7 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                'Featured Building',
+                'Top Properties 🏡',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -57,7 +57,7 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
                 onTap: () {
                   print('This is see more');
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ListviewPage()));
+                      MaterialPageRoute(builder: (context) => ListViewPage()));
                 },
                 child: Text(
                   'See more',
@@ -234,7 +234,7 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
                               child: Image(
                                 height: 180.0,
                                 width: 320.0,
-                                image: NetworkImage(property.thumbnailImage),
+                                image: NetworkImage(property.images[0]),
                                 fit: BoxFit.cover,
                               ),
                             ),
