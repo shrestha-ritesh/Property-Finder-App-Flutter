@@ -4,6 +4,7 @@ import 'package:propertyfinder/api/api_get.dart';
 import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/models/property_model.dart';
 import 'package:propertyfinder/modules/listview_page/listview.dart';
+import 'package:propertyfinder/modules/listview_page/property_lists.dart';
 
 // class FeaturedCarousel extends StatelessWidget {
 //   @override
@@ -52,9 +53,9 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   print('This is see more');
-                  Navigator.push(context,
+                  await Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ListViewPage()));
                 },
                 child: Text(
@@ -85,6 +86,13 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                   session.set("user_id", property.userId);
                   print("Property_ID ==>" + property.propertyId.toString());
                   print("User ==> " + property.userId.toString());
+                  Navigator.push(
+                      context,
+                      // MaterialPageRoute(
+                      //     builder: (context) => PropertyListsView(property: property)));
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PropertyListsView(property: property)));
                 },
                 child: Container(
                   margin: EdgeInsets.all(10),
@@ -149,66 +157,76 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                                 SizedBox(
                                     height: 30,
                                     child: Divider(color: Colors.black)),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.bathtub,
-                                      color: Colors.black,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      "12",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Icon(
-                                      Icons.house,
-                                      color: Colors.black,
-                                      size: 20,
-                                    ),
-                                    Text(
-                                      "12",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Icon(
-                                      Icons.house,
-                                      color: Colors.black,
-                                      size: 20,
-                                    ),
-                                    Text(
-                                      "12",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Icon(
-                                      Icons.car_rental,
-                                      color: Colors.black,
-                                      size: 20,
-                                    ),
-                                    Text(
-                                      "12",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                Container(
+                                  child: (property.propertyType == "Land" ||
+                                          property.propertyType == "Business")
+                                      ? Row(
+                                          children: [Text("Land And Building")],
+                                        )
+                                      : Row(
+                                          children: [
+                                            Icon(
+                                              Icons.bathtub,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "12 S",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Icon(
+                                              Icons.single_bed,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            Text(
+                                              property.otherDetails.bedroom,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Icon(
+                                              Icons.house,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            Text(
+                                              "12",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Icon(
+                                              Icons.directions_car,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            Text(
+                                              "12",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                  // Row(
+                                  //   children: (property.propertyType == "Land" || property.propertyType == "Business") ? Text("Land and Building") : Text("data");
+                                  // )
+                                ),
                               ],
                             ),
                           ),

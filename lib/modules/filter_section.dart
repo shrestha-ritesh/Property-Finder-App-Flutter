@@ -6,7 +6,7 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
-  var selectedRange = RangeValues(400, 1000);
+  var selectedRange = RangeValues(100, 1000);
   String dropdownValue = 'House';
 
   @override

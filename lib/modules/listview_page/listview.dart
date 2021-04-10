@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:propertyfinder/api/api_get.dart';
+import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/models/property_attributes_model.dart';
 import 'package:propertyfinder/modules/listview_page/property_lists.dart';
 import '../filter_section.dart';
@@ -17,7 +19,21 @@ class ListViewPage extends StatefulWidget {
 }
 
 class _ListViewPageState extends State<ListViewPage> {
-  List<Property> properties = getPropertyDetails();
+  // List<Property> properties = getPropertyDetails();
+  List<Datum> properties = [];
+  bool _loading;
+
+  @override
+  void initState() {
+    super.initState();
+    Services.getProperty().then((property) {
+      setState(() {
+        properties = property;
+        _loading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -236,7 +252,7 @@ class _ListViewPageState extends State<ListViewPage> {
     for (var i = 0; i < properties.length; i++) {
       list.add(
         Hero(
-          tag: properties[i].frontImage,
+          tag: properties[i].images[0],
           child: propertyBuild(properties[i], i, context),
         ),
       );
@@ -245,7 +261,7 @@ class _ListViewPageState extends State<ListViewPage> {
   }
 
   //Creating method propertyBuild for rest of the operations:
-  Widget propertyBuild(Property property, int index, BuildContext context) {
+  Widget propertyBuild(Datum property, int index, BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -270,7 +286,7 @@ class _ListViewPageState extends State<ListViewPage> {
               height: 210,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(property.frontImage),
+                  image: NetworkImage(property.images[0]),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -297,7 +313,7 @@ class _ListViewPageState extends State<ListViewPage> {
                         child: Row(
                           children: <Widget>[
                             Text(
-                              "For " + property.label,
+                              "For " + property.propertyStatus,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white,
@@ -350,7 +366,7 @@ class _ListViewPageState extends State<ListViewPage> {
                           width: 5,
                         ),
                         Text(
-                          property.price,
+                          property.propertyPrice.toString(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -372,7 +388,7 @@ class _ListViewPageState extends State<ListViewPage> {
                           width: 5,
                         ),
                         Text(
-                          property.location,
+                          property.propertyAddress,
                           style: TextStyle(
                             fontSize: 16,
                           ),
@@ -382,7 +398,6 @@ class _ListViewPageState extends State<ListViewPage> {
                     SizedBox(
                       height: 5,
                     ),
-                    Text(property.label),
                   ],
                 ),
               ),

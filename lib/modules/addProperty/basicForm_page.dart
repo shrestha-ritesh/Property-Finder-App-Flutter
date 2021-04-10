@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:fa_stepper/fa_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -204,102 +205,88 @@ class _BasicPageFormState extends State<BasicPageForm> {
     return Scaffold(
       key: scaffoldKey,
       appBar: homeAppBar(context, "Add Property"),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Form(
-                    key: globalFormKey,
-                    child: Stepper(
-                      steps: _stepper(),
-                      physics: ClampingScrollPhysics(),
-                      currentStep: this._currentStep,
-                      onStepTapped: (step) {
-                        setState(() {
-                          this._currentStep = step;
-                        });
-                      },
-                      onStepContinue: () {
-                        //It transfers to another
-                        setState(() {
-                          if (this._currentStep < this._stepper().length - 1) {
-                            this._currentStep = this._currentStep + 1;
-                          } else {
-                            //Main Functionality for end of the form
-                            print('Complete');
+      body: Form(
+        key: globalFormKey,
+        child: FAStepper(
+          steps: _stepper(),
+          physics: ClampingScrollPhysics(),
+          type: FAStepperType.horizontal,
+          currentStep: this._currentStep,
+          onStepTapped: (step) {
+            setState(() {
+              this._currentStep = step;
+            });
+          },
+          onStepContinue: () {
+            //It transfers to another
+            setState(() {
+              if (this._currentStep < this._stepper().length - 1) {
+                this._currentStep = this._currentStep + 1;
+              } else {
+                //Main Functionality for end of the form
+                print('Complete');
 
-                            //condition for posting the data in backend
-                            if (validate()) {
-                              ApiService apiService = new ApiService();
-                              apiService.addproperty(addProperty).then((value) {
-                                if (value.message.isNotEmpty) {
-                                  session.set("propertyid", value.propertyid);
-                                  print('Propertyid');
-                                  if (value.success == 1) {
-                                    _saveImage();
-                                    //For single content upload
-                                    singleUpload();
-                                    print('Test');
-                                  } else {
-                                    print(value.error);
-                                  }
-                                  final snackbar = SnackBar(
-                                    content: Text("Sucessfully Added !!"),
-                                  );
-                                  scaffoldKey.currentState
-                                      .showSnackBar(snackbar);
-                                  print(value.message);
-                                  //Navigate to another page
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => TestPage()));
-                                } else {
-                                  final snackbar = SnackBar(
-                                    content: Text(value.error),
-                                  );
-                                  scaffoldKey.currentState
-                                      .showSnackBar(snackbar);
-                                }
-                              });
-                            } else {
-                              // final snackbar = SnackBar(
-                              //   content: Text("Please fill all the values  !"),
-                              // );
-                              // scaffoldKey.currentState.showSnackBar(snackbar);
-                              showAlertDialog(context);
-                            }
-                            // _saveImage();
-                          }
-                        });
-                      },
-                      onStepCancel: () {
-                        setState(() {
-                          if (this._currentStep > 0) {
-                            this._currentStep = this._currentStep - 1;
-                          } else {
-                            this._currentStep = 0;
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+                //condition for posting the data in backend
+                if (validate()) {
+                  ApiService apiService = new ApiService();
+                  apiService.addproperty(addProperty).then((value) {
+                    if (value.message.isNotEmpty) {
+                      session.set("propertyid", value.propertyid);
+                      print('Propertyid');
+                      if (value.success == 1) {
+                        _saveImage();
+                        //For single content upload
+                        singleUpload();
+                        print('Test');
+                      } else {
+                        print(value.error);
+                      }
+                      final snackbar = SnackBar(
+                        content: Text("Sucessfully Added !!"),
+                      );
+                      scaffoldKey.currentState.showSnackBar(snackbar);
+                      print(value.message);
+                      //Navigate to another page
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => TestPage()));
+                    } else {
+                      final snackbar = SnackBar(
+                        content: Text(value.error),
+                      );
+                      scaffoldKey.currentState.showSnackBar(snackbar);
+                    }
+                  });
+                } else {
+                  // final snackbar = SnackBar(
+                  //   content: Text("Please fill all the values  !"),
+                  // );
+                  // scaffoldKey.currentState.showSnackBar(snackbar);
+                  showAlertDialog(context);
+                }
+                // _saveImage();
+              }
+            });
+          },
+          onStepCancel: () {
+            setState(() {
+              if (this._currentStep > 0) {
+                this._currentStep = this._currentStep - 1;
+              } else {
+                this._currentStep = 0;
+              }
+            });
+          },
         ),
       ),
     );
   }
 
 // Lists for stepper steps
-  List<Step> _stepper() {
-    List<Step> _steps = [
-      Step(
+  List<FAStep> _stepper() {
+    List<FAStep> _steps = [
+      FAStep(
         title: Text(
           'Basic Details',
           style: TextStyle(fontSize: 17),
@@ -523,9 +510,9 @@ class _BasicPageFormState extends State<BasicPageForm> {
           ],
         ),
         isActive: _currentStep >= 0,
-        state: StepState.editing,
+        state: FAStepstate.editing,
       ),
-      Step(
+      FAStep(
         title: Text(
           'Property Details',
           style: TextStyle(fontSize: 17),
@@ -858,7 +845,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
           ],
         ),
         isActive: _currentStep >= 1,
-        state: StepState.editing,
+        state: FAStepstate.editing,
       ),
       // Step(
       //   title: Text('Property Amenitites'),
@@ -879,7 +866,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
       //   state: StepState.editing,
       // ),
       //Codes for adding images using milti image picker
-      Step(
+      FAStep(
         title: Text(
           'Property Images',
           style: TextStyle(fontSize: 17),
@@ -915,9 +902,9 @@ class _BasicPageFormState extends State<BasicPageForm> {
           ),
         ),
         isActive: _currentStep >= 2,
-        state: StepState.editing,
+        state: FAStepstate.editing,
       ),
-      Step(
+      FAStep(
         title: Text(
           'Property Pricing',
           style: TextStyle(fontSize: 17),
@@ -962,7 +949,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
           ],
         ),
         isActive: _currentStep >= 3,
-        state: StepState.editing,
+        state: FAStepstate.editing,
       ),
     ];
     return _steps;
@@ -1003,7 +990,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
     final form = globalFormKey.currentState;
     if (form.validate()) {
       sendValidData();
-      // form.save();
+      form.save();
       return true;
     }
     return false;

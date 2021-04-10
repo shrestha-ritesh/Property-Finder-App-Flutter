@@ -44,6 +44,8 @@ class Datum {
     this.userId,
     this.thumbnailImage,
     this.images,
+    this.otherDetails,
+    this.userDetail,
   });
 
   int propertyId;
@@ -64,6 +66,8 @@ class Datum {
   int userId;
   String thumbnailImage;
   List<String> images;
+  OtherDetails otherDetails;
+  UserDetail userDetail;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         propertyId: json["property_id"],
@@ -84,6 +88,10 @@ class Datum {
         userId: json["userId"],
         thumbnailImage: json["thumbnail_image"],
         images: List<String>.from(json["images"].map((x) => x)),
+        otherDetails: json["other_details"] == null
+            ? null
+            : OtherDetails.fromJson(json["other_details"]),
+        userDetail: UserDetail.fromJson(json["user_detail"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -105,5 +113,91 @@ class Datum {
         "userId": userId,
         "thumbnail_image": thumbnailImage,
         "images": List<dynamic>.from(images.map((x) => x)),
+        "other_details": otherDetails == null ? null : otherDetails.toJson(),
+        "user_detail": userDetail.toJson(),
+      };
+}
+
+class OtherDetails {
+  OtherDetails({
+    this.houseId,
+    this.bedroom,
+    this.rooms,
+    this.kitchen,
+    this.livingRoom,
+    this.parking,
+    this.propertyId,
+    this.builtYear,
+    this.totalFloors,
+    this.apartmentId,
+    this.bathroom,
+  });
+
+  int houseId;
+  String bedroom;
+  String rooms;
+  String kitchen;
+  String livingRoom;
+  String parking;
+  int propertyId;
+  String builtYear;
+  String totalFloors;
+  int apartmentId;
+  String bathroom;
+
+  factory OtherDetails.fromJson(Map<String, dynamic> json) => OtherDetails(
+        houseId: json["house_id"] == null ? null : json["house_id"],
+        bedroom: json["bedroom"],
+        rooms: json["rooms"],
+        kitchen: json["kitchen"],
+        livingRoom: json["living_room"],
+        parking: json["parking"],
+        propertyId: json["property_id"],
+        builtYear: json["built_year"] == null ? null : json["built_year"],
+        totalFloors: json["total_floors"] == null ? null : json["total_floors"],
+        apartmentId: json["apartment_id"] == null ? null : json["apartment_id"],
+        bathroom: json["bathroom"] == null ? null : json["bathroom"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "house_id": houseId == null ? null : houseId,
+        "bedroom": bedroom,
+        "rooms": rooms,
+        "kitchen": kitchen,
+        "living_room": livingRoom,
+        "parking": parking,
+        "property_id": propertyId,
+        "built_year": builtYear == null ? null : builtYear,
+        "total_floors": totalFloors == null ? null : totalFloors,
+        "apartment_id": apartmentId == null ? null : apartmentId,
+        "bathroom": bathroom == null ? null : bathroom,
+      };
+}
+
+class UserDetail {
+  UserDetail({
+    this.userId,
+    this.name,
+    this.email,
+    this.contactNo,
+  });
+
+  int userId;
+  String name;
+  String email;
+  String contactNo;
+
+  factory UserDetail.fromJson(Map<String, dynamic> json) => UserDetail(
+        userId: json["userId"],
+        name: json["name"],
+        email: json["email"],
+        contactNo: json["contact_no"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "userId": userId,
+        "name": name,
+        "email": email,
+        "contact_no": contactNo,
       };
 }

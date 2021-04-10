@@ -36,7 +36,7 @@ List<Property> getPropertyDetails() {
       "Long Beach California",
       "2,568",
       "4.8",
-      "It is pretty good for living.",
+      "It is pretty good for living. This is lorem ipsum please verify the words that consists in the letters where is is just the sample for the description of the applicaiton.",
       "images/category1.jpg",
       "images/ownerImage1.png",
       [
@@ -53,7 +53,7 @@ List<Property> getPropertyDetails() {
       "Nepal Kathmandu",
       "2,568",
       "4.5",
-      "The property is situated in hear of the Kathmandu.",
+      "The property is situated in hear of the Kathmandu. This is lorem ipsum please verify the words that consists in the letters where is is just the sample for the description of the applicaiton.",
       "images/category2.jpg",
       "images/ownerImage1.png",
       [
@@ -70,7 +70,7 @@ List<Property> getPropertyDetails() {
       "Queensland",
       "2,568",
       "4.5",
-      "The property is situated in hear of the Queensland.",
+      "The property is situated in hear of the Queensland. This is lorem ipsum please verify the words that consists in the letters where is is just the sample for the description of the applicaiton.",
       "images/category3.jpg",
       "images/ownerImage1.png",
       [
@@ -82,12 +82,12 @@ List<Property> getPropertyDetails() {
     Property(
       "SALE",
       "State House",
-      "House",
+      "Land",
       "25233123",
       "Samakhushi, Kathmandu",
       "2,568",
       "4.5",
-      "The property is situated in hear of the Queensland.",
+      "The property is situated in hear of the Queensland. This is lorem ipsum please verify the words that consists in the letters where is is just the sample for the description of the applicaiton.",
       "images/category4.jpg",
       "images/ownerImage1.png",
       [
