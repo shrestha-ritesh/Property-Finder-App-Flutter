@@ -42,16 +42,15 @@ class UserRequest {
 class UserRequestResponse {
   final String error;
   final String message;
+  final int success;
 
-  UserRequestResponse({
-    this.error,
-    this.message,
-  });
+  UserRequestResponse({this.error, this.message, this.success});
 
   factory UserRequestResponse.fromJson(Map<String, dynamic> json) {
     return UserRequestResponse(
       error: json["error"] != null ? json["error"] : "",
       message: json["message"] != null ? json["message"] : "",
+      success: json["success"] != null ? json["success"] : "",
     );
   }
 }

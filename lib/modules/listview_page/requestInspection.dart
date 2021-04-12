@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_session/flutter_session.dart';
+import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/config/config.dart';
 import 'package:propertyfinder/models/requestModel.dart';
 
@@ -33,6 +36,9 @@ class _RequestInspectionState extends State<RequestInspection> {
   String selectedDate;
 
   Timer _timer;
+
+  //Implementing flutter session:
+  var session = FlutterSession();
 
   @override
   Widget build(BuildContext context) {
@@ -299,14 +305,24 @@ class _RequestInspectionState extends State<RequestInspection> {
                     ),
                     //Flat Button Container
                     FlatButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (validate()) {
                           print(userRequest.toJson());
-                        } else {
-                          final snackbar = SnackBar(
-                            content: Text("Error !"),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackbar);
+                          ApiService apiService = new ApiService();
+                          apiService.userInspection(userRequest).then((value) {
+                            if (value.success == 1) {
+                              EasyLoading.showSuccess(
+                                  'Successfully Requested!');
+                              Future.delayed(Duration(seconds: 2), () {
+                                Navigator.pop(context);
+                              });
+                            } else {
+                              final snackbar = SnackBar(
+                                content: Text("Something went wrong !"),
+                              );
+                              scaffoldKey.currentState.showSnackBar(snackbar);
+                            }
+                          });
                         }
                       },
                       color: Colors.blueGrey[600],

@@ -1,5 +1,6 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:propertyfinder/api/api_get.dart';
 import 'package:propertyfinder/extra/imageDialog.dart';
 import 'package:propertyfinder/models/Property.dart';
@@ -30,6 +31,9 @@ class _PropertyListsViewState extends State<PropertyListsView> {
   List<String> imageNameList;
   bool uncheckFavorites = false;
   PageController pageController;
+
+  //Setting the session for the server
+  var session = FlutterSession();
 
   @override
   void initState() {
@@ -730,10 +734,15 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                         ),
                         SizedBox(height: 5),
                         FlatButton(
-                          onPressed: () {
+                          onPressed: () async {
                             print("Requested for Inspection");
                             // _showBottomSheet(context);
                             // RequestInspection();
+                            session.set(
+                                "property_id", widget.property.propertyId);
+                            int userId = await FlutterSession().get("id");
+                            print(widget.property.propertyId);
+                            print("This is user if ==> $userId");
                             Navigator.push(
                                 context,
                                 // MaterialPageRoute(

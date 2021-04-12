@@ -6,6 +6,7 @@ import 'package:propertyfinder/models/add_property_model.dart';
 import 'dart:convert';
 import 'package:propertyfinder/models/login_module.dart';
 import 'package:propertyfinder/models/register_module.dart';
+import 'package:propertyfinder/models/requestModel.dart';
 
 class ApiService {
   //creating the method of future type with the reponse type of LoginResponse Model
@@ -57,6 +58,28 @@ class ApiService {
     try {
       if (response.statusCode == 200 || response.statusCode == 400) {
         return AddPropertyResponse.fromJson(json.decode(response.body));
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  //Sending the inspection request to the server:
+  Future<UserRequestResponse> userInspection(UserRequest userRequest) async {
+    int propId = await FlutterSession().get("property_id");
+    int userId = await FlutterSession().get("id");
+    String url = BASE_URL + "request/inspection/$propId/$userId";
+    print('This is userId ==> $userId');
+    print('This is property_Id ==> $propId');
+
+    final response = await http.post(
+      url,
+      body: userRequest.toJson(),
+    );
+    print("This is response body" + response.body);
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        return UserRequestResponse.fromJson(json.decode(response.body));
       }
     } catch (e) {
       throw Exception(e);

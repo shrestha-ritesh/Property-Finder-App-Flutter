@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:propertyfinder/extra/drawer-clipper.dart';
 import 'package:propertyfinder/modules/addProperty/add_property.dart';
 import 'package:propertyfinder/modules/home/home_body.dart';
+import 'package:propertyfinder/modules/saved/propertySaved.dart';
 
 import '../../test_page.dart';
 
@@ -29,7 +30,7 @@ class Homepage extends StatelessWidget {
           milliseconds: 280,
         ),
         animationCurve: Curves.linearToEaseOut,
-        index: 1,
+        index: 0,
         items: <Widget>[
           Icon(
             Icons.home,
@@ -63,8 +64,8 @@ class Homepage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => AddPropertyMain()));
           }
           if (index == 2) {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => TestPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SavedProperties()));
           }
           if (index == 3) {
             await Navigator.push(
