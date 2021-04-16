@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
+import 'package:propertyfinder/modules/searchPage/search.dart';
 
 class HomePageHeader extends StatelessWidget {
   const HomePageHeader({
@@ -85,9 +86,24 @@ class HomePageHeader extends StatelessWidget {
                       color: Colors.blueGrey.withOpacity(0.23),
                     ),
                   ]),
-              child: TextField(
-                onChanged: (value) {
+              child: TextFormField(
+                textInputAction: TextInputAction.search,
+                validator: (input) => input == "" ? "Please insert data" : null,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      // MaterialPageRoute(
+                      //     builder: (context) => PropertyListsView(property: property)));
+                      MaterialPageRoute(
+                          builder: (context) => SearchPageForm()));
+                },
+                onFieldSubmitted: (value) {
                   print(value);
+                  if (value == "") {
+                    print("Fuck yOU");
+                  } else {
+                    print("Kada cha");
+                  }
                 },
                 decoration: InputDecoration(
                   hintText: 'Search Property',

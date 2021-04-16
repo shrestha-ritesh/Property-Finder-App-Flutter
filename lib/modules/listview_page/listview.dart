@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:propertyfinder/api/api_get.dart';
 import 'package:propertyfinder/models/Property.dart';
-import 'package:propertyfinder/models/property_attributes_model.dart';
 import 'package:propertyfinder/modules/listview_page/property_lists.dart';
 import '../filter_section.dart';
 
@@ -112,65 +111,65 @@ class _ListViewPageState extends State<ListViewPage> {
                 ),
               ),
             ),
-            Container(
-              color: Colors.blueGrey[600],
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16, bottom: 8, left: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        height: 32,
-                        child: Stack(
-                          children: <Widget>[
-                            ListView(
-                              physics: BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                filterOptions("Option 1"),
-                                filterOptions("Option 2"),
-                                filterOptions("Option 3"),
-                                filterOptions("Option 4"),
-                                filterOptions("Option 5"),
-                              ],
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                width: 28,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.centerRight,
-                                    end: Alignment.centerLeft,
-                                    stops: [0.0, 10.0],
-                                    colors: [
-                                      Colors.blueGrey[600],
-                                      Colors.blueGrey[600].withOpacity(0.0),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10, right: 24),
-                      child: Text(
-                        'Filters',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Container(
+            //   color: Colors.blueGrey[600],
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(top: 16, bottom: 8, left: 12),
+            //     // child: Row(
+            //     //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     //   children: <Widget>[
+            //     //     Expanded(
+            //     //       child: Container(
+            //     //         height: 32,
+            //     //         child: Stack(
+            //     //           children: <Widget>[
+            //     //             ListView(
+            //     //               physics: BouncingScrollPhysics(),
+            //     //               scrollDirection: Axis.horizontal,
+            //     //               children: <Widget>[
+            //     //                 filterOptions("Option 1"),
+            //     //                 filterOptions("Option 2"),
+            //     //                 filterOptions("Option 3"),
+            //     //                 filterOptions("Option 4"),
+            //     //                 filterOptions("Option 5"),
+            //     //               ],
+            //     //             ),
+            //     //             Align(
+            //     //               alignment: Alignment.centerRight,
+            //     //               child: Container(
+            //     //                 width: 28,
+            //     //                 decoration: BoxDecoration(
+            //     //                   gradient: LinearGradient(
+            //     //                     begin: Alignment.centerRight,
+            //     //                     end: Alignment.centerLeft,
+            //     //                     stops: [0.0, 10.0],
+            //     //                     colors: [
+            //     //                       Colors.blueGrey[600],
+            //     //                       Colors.blueGrey[600].withOpacity(0.0),
+            //     //                     ],
+            //     //                   ),
+            //     //                 ),
+            //     //               ),
+            //     //             )
+            //     //           ],
+            //     //         ),
+            //     //       ),
+            //     //     ),
+            //     //     Padding(
+            //     //       padding: EdgeInsets.only(left: 10, right: 24),
+            //     //       child: Text(
+            //     //         'Filters',
+            //     //         style: TextStyle(
+            //     //           fontSize: 18,
+            //     //           fontWeight: FontWeight.w600,
+            //     //           color: Colors.white,
+            //     //         ),
+            //     //       ),
+            //     //     ),
+            //     //   ],
+            //     // ),
+            //   ),
+            // ),
             Padding(
               padding:
                   EdgeInsets.only(right: 24, left: 24, top: 18, bottom: 10),

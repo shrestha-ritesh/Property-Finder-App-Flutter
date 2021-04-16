@@ -1,4 +1,7 @@
+import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
+import 'package:propertyfinder/config/config.dart';
+import 'package:propertyfinder/models/Favourites.dart';
 import '../models/Property.dart';
 // class GetApi {
 //   Future<String> getImageData() async {
@@ -14,10 +17,10 @@ import '../models/Property.dart';
 // }
 
 class Services {
-  static const String url =
-      'http://10.0.2.2:3000/v1/property/getPropertyDetails';
+  var session = FlutterSession();
 
   static Future<List<Datum>> getProperty() async {
+    const String url = 'http://10.0.2.2:3000/v1/property/getPropertyDetails';
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -32,6 +35,45 @@ class Services {
       } else {
         print('Khali cha hai');
         // return List<Property>();
+      }
+    } catch (e) {
+      return List<Datum>();
+    }
+  }
+
+  //For getting Favourites detail:
+  static const String url1 =
+      'http://10.0.2.2:3000/v1/saveProperties/favourites/getData';
+  static Future<List<FavouritesId>> getFavouritesId() async {
+    try {
+      final response = await http.get(url1);
+      if (response.statusCode == 200) {
+        final body = response.body;
+        final favourites = favouritesDataFromJson(body);
+        List<FavouritesId> favourite = favourites.data;
+        print(favourite[0].favouriteId);
+        return favourite;
+      } else {
+        print('Error');
+      }
+    } catch (e) {
+      return List<FavouritesId>();
+    }
+  }
+
+  //Getting the Property data for the favourites of the individual user:
+  static Future<List<Datum>> getFavouriteProperty() async {
+    int userId = await FlutterSession().get("id");
+    String url = BASE_URL + "saveProperties/favourites/getprop/$userId";
+    print(url);
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final body = response.body;
+        final favouriteProperties = propertyFromJson(body);
+        List<Datum> favProperty = favouriteProperties.data;
+        print(favProperty[0]);
+        return favProperty;
       }
     } catch (e) {
       return List<Datum>();

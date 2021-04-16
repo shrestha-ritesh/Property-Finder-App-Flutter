@@ -1,4 +1,5 @@
 //Importing flutter http package for api
+
 import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:propertyfinder/config/config.dart';
@@ -7,6 +8,7 @@ import 'dart:convert';
 import 'package:propertyfinder/models/login_module.dart';
 import 'package:propertyfinder/models/register_module.dart';
 import 'package:propertyfinder/models/requestModel.dart';
+import 'package:propertyfinder/models/sendFavourites.dart';
 
 class ApiService {
   //creating the method of future type with the reponse type of LoginResponse Model
@@ -80,6 +82,55 @@ class ApiService {
     try {
       if (response.statusCode == 200 || response.statusCode == 400) {
         return UserRequestResponse.fromJson(json.decode(response.body));
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  //For sending the saved properties id;
+  Future<FavouriteSaveResponse> savedFavourites(
+      FavouriteSave favouriteSave) async {
+    String url = BASE_URL + "saveProperties/favourites/post";
+    String token = await FlutterSession().get("token");
+
+    final response = await http.post(
+      url,
+      headers: {
+        "authorization": "$token",
+      },
+      body: favouriteSave.toJson(),
+    );
+    print("This is the final response " + response.body);
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        return FavouriteSaveResponse.fromJson(json.decode(response.body));
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  //For removing the same saved properties _id
+  Future<FavouriteSaveResponse> removeFavourite(
+      FavouriteSave favouriteSave) async {
+    int prop_id = await FlutterSession().get("removeFavPropId");
+    int userId = await FlutterSession().get("id");
+
+    String token = await FlutterSession().get("token");
+
+    String url = BASE_URL + "saveProperties/favourites/delete/$prop_id/$userId";
+
+    final response = await http.delete(
+      url,
+      headers: {
+        "authorization": "$token",
+      },
+    );
+    print("This is the final response " + response.body);
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        return FavouriteSaveResponse.fromJson(json.decode(response.body));
       }
     } catch (e) {
       throw Exception(e);

@@ -85,7 +85,7 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
                 onTap: () async {
                   print("Tap");
                   // session.set("property_id", property.propertyId);
-                  // session.set("user_id", property.userId);
+                  session.set("user_id", property.userId);
                   // print("Property_ID ==>" + property.propertyId.toString());
                   // print("User ==> " + property.userId.toString());
                   await Navigator.push(
@@ -93,8 +93,9 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
                       // MaterialPageRoute(
                       //     builder: (context) => PropertyListsView(property: property)));
                       MaterialPageRoute(
-                          builder: (context) =>
-                              PropertyListsView(property: property)));
+                          builder: (context) => PropertyListsView(
+                                property: property,
+                              )));
                 },
                 child: Container(
                   margin: EdgeInsets.all(10),

@@ -1,10 +1,13 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:propertyfinder/api/api_get.dart';
+import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/extra/imageDialog.dart';
+import 'package:propertyfinder/models/Favourites.dart';
 import 'package:propertyfinder/models/Property.dart';
-import 'package:propertyfinder/models/property_attributes_model.dart';
+import 'package:propertyfinder/models/sendFavourites.dart';
 import 'package:propertyfinder/modules/home/ListHomePage/new_article.dart';
 import 'package:propertyfinder/modules/listview_page/requestInspection.dart';
 
@@ -27,6 +30,10 @@ class PropertyListsView extends StatefulWidget {
 
 class _PropertyListsViewState extends State<PropertyListsView> {
   List<Datum> property = [];
+  List changedFavourites = [];
+  int userId;
+  bool checkFav;
+  List<FavouritesId> favourites = [];
   //For image name lists
   List<String> imageNameList;
   bool uncheckFavorites = false;
@@ -35,14 +42,58 @@ class _PropertyListsViewState extends State<PropertyListsView> {
   //Setting the session for the server
   var session = FlutterSession();
 
+  //Declaring global Key for form submission
+  GlobalKey<FormState> globalFormKey = new GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  //getting the user data:
+  FavouriteSave favouriteSave = FavouriteSave();
+
+  buildit() async {
+    int user_Id = await session.get("id");
+    setState(() {
+      userId = user_Id;
+    });
+  }
+
+  buildFavourites() {
+    int prop_id = widget.property.propertyId;
+    int user_Id = userId;
+    print(user_Id);
+    for (var i = 0; i < favourites.length; i++) {
+      print("Tero bajeyfav " + favourites[i].propertyId.toString());
+      print("Tero bajeyfav " + favourites[i].userId.toString());
+      print("Tero asdfadf " + prop_id.toString());
+      print("Tero lsfda " + user_Id.toString());
+      changedFavourites.add(favourites[i]);
+      if (prop_id == favourites[i].propertyId &&
+          user_Id == favourites[i].userId) {
+        print("trueasdf");
+        return true;
+      }
+    }
+    return false;
+  }
+
   @override
   void initState() {
     super.initState();
+    validData();
     Services.getProperty().then((propertyData) {
       setState(() {
         property = propertyData;
       });
     });
+    //getting the favourites data:
+    Services.getFavouritesId().then((favourite) {
+      setState(() {
+        favourites = favourite;
+      });
+    });
+    buildit();
+    checkFav = buildFavourites();
+    print("This is check fav ==>" + checkFav.toString());
+
     pageController = PageController(initialPage: 1, viewportFraction: 0.8);
   }
 
@@ -212,14 +263,67 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                               ),
                               child: Center(
                                   child: IconButton(
-                                icon: Icon(!uncheckFavorites
+                                icon: Icon(!buildFavourites()
                                     ? Icons.favorite_border
                                     : Icons.favorite),
-                                onPressed: () {
+                                onPressed: () async {
                                   setState(() {
-                                    uncheckFavorites = !uncheckFavorites;
+                                    checkFav = !checkFav;
+                                    buildFavourites();
                                     print('Pressed favorite button');
                                   });
+                                  // for loop for checking the data
+                                  if (checkFav) {
+                                    validData();
+                                    print(buildFavourites().toString());
+                                    await session.set("removeFavPropId",
+                                        widget.property.propertyId);
+                                    print(favouriteSave.toJson());
+                                    ApiService apiService = new ApiService();
+                                    apiService
+                                        .savedFavourites(favouriteSave)
+                                        .then((value) => {
+                                              if (value.success == 1)
+                                                {
+                                                  EasyLoading.showSuccess(
+                                                      'Successfully Saved!')
+                                                }
+                                            });
+                                  }
+                                  // //Logic for hitting the backend api of the application
+                                  // if (uncheckFavorites) {
+                                  //   validData();
+                                  //   print("asdfasdf" +
+                                  //       favourites[0].propertyId.toString());
+                                  //   await session.set("removeFavPropId",
+                                  //       widget.property.propertyId);
+                                  //   print(favouriteSave.toJson());
+                                  //   ApiService apiService = new ApiService();
+                                  //   apiService
+                                  //       .savedFavourites(favouriteSave)
+                                  //       .then((value) => {
+                                  //             if (value.success == 1)
+                                  //               {
+                                  //                 EasyLoading.showSuccess(
+                                  //                     'Successfully Saved!')
+                                  //               }
+                                  //           });
+                                  // }
+                                  if (!checkFav) {
+                                    await session.set("removeFavPropId",
+                                        widget.property.propertyId);
+                                    print(favouriteSave.toJson());
+                                    ApiService apiService = new ApiService();
+                                    apiService
+                                        .removeFavourite(favouriteSave)
+                                        .then((value) => {
+                                              if (value.success == 1)
+                                                {
+                                                  EasyLoading.showSuccess(
+                                                      'Removed from Saved!')
+                                                }
+                                            });
+                                  }
                                 },
                               )),
                             ),
@@ -860,6 +964,13 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                                       "Owner Name: ",
                                       style: TextStyle(fontSize: 16),
                                     ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "Posted Date: ",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
                                   ],
                                 ),
                                 SizedBox(
@@ -905,6 +1016,21 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                                     ),
                                     Text(
                                       "Owner Name",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      widget.property.propertyAddedDate.year
+                                              .toString() +
+                                          "/" +
+                                          widget
+                                              .property.propertyAddedDate.month
+                                              .toString() +
+                                          "/" +
+                                          widget.property.propertyAddedDate.day
+                                              .toString(),
                                       style: TextStyle(fontSize: 16),
                                     ),
                                   ],
@@ -1070,4 +1196,12 @@ class _PropertyListsViewState extends State<PropertyListsView> {
   //         );
   //       });
   // }
+
+  void validData() async {
+    int userId = await FlutterSession().get("id");
+    favouriteSave = FavouriteSave(
+      userId: userId.toString(),
+      property_id: widget.property.propertyId.toString(),
+    );
+  }
 }

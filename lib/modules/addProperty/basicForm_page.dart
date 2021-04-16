@@ -15,7 +15,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/config/config.dart';
 import 'package:propertyfinder/models/add_property_model.dart';
-import 'package:propertyfinder/test_page.dart';
 // import 'package:propertyfinder/models/property_model.dart';
 import '../../appBar.dart';
 
