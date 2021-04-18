@@ -36,31 +36,34 @@ class AddProperty {
   // ignore: non_constant_identifier_names
   String total_floors;
   String bathroom;
+  String longitude;
+  String latitude;
 
 //Creating constructor for all the declared variables
-  AddProperty({
-    this.property_name,
-    this.property_description,
-    this.property_price,
-    this.property_status,
-    this.property_type,
-    this.property_address,
-    this.property_city,
-    this.property_located_area,
-    this.built_up_area,
-    this.property_total_area,
-    this.property_face,
-    this.road_distance,
-    this.road_type,
-    this.bathroom,
-    this.rooms,
-    this.kitchen,
-    this.living_room,
-    this.parking,
-    this.built_year,
-    this.total_floors,
-    this.bedroom,
-  });
+  AddProperty(
+      {this.property_name,
+      this.property_description,
+      this.property_price,
+      this.property_status,
+      this.property_type,
+      this.property_address,
+      this.property_city,
+      this.property_located_area,
+      this.built_up_area,
+      this.property_total_area,
+      this.property_face,
+      this.road_distance,
+      this.road_type,
+      this.bathroom,
+      this.rooms,
+      this.kitchen,
+      this.living_room,
+      this.parking,
+      this.built_year,
+      this.total_floors,
+      this.bedroom,
+      this.longitude,
+      this.latitude});
 
   //Mapping the data in the form of JSON
   Map<String, dynamic> toJson() => _$ModelToJson(this);
@@ -87,6 +90,8 @@ class AddProperty {
         'built_year': instance.built_year,
         'total_floors': instance.total_floors,
         'bedroom': instance.bedroom,
+        'longitude': instance.longitude,
+        'latitude': instance.latitude,
       };
 }
 

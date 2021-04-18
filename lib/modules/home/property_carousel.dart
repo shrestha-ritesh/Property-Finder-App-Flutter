@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:propertyfinder/api/api_get.dart';
 import 'package:propertyfinder/models/Property.dart';
@@ -22,11 +25,18 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
   List<Datum> _property = [];
   bool _loading;
   var session = FlutterSession();
+  Timer _timer;
 
   @override
   void initState() {
     _loading = true;
     super.initState();
+    EasyLoading.addStatusCallback((status) {
+      print('EasyLoading Status $status');
+      if (status == EasyLoadingStatus.dismiss) {
+        _timer?.cancel();
+      }
+    });
     Services.getProperty().then((property) {
       setState(() {
         _property = property;
@@ -57,8 +67,12 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
               GestureDetector(
                 onTap: () {
                   print('This is see more');
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ListViewPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ListViewPage(
+                                property: _property,
+                              )));
                 },
                 child: Text(
                   'See more',

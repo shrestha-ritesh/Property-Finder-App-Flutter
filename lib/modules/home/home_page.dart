@@ -5,6 +5,7 @@ import 'package:propertyfinder/modules/addProperty/add_property.dart';
 import 'package:propertyfinder/modules/home/home_body.dart';
 import 'package:propertyfinder/modules/saved/propertySaved.dart';
 import 'package:propertyfinder/modules/searchPage/search.dart';
+import 'package:propertyfinder/modules/userSettings/applicationSettings.dart';
 
 import '../../test_page.dart';
 
@@ -54,7 +55,7 @@ class Homepage extends StatelessWidget {
             color: Colors.white,
           ),
           Icon(
-            Icons.switch_account,
+            Icons.account_box,
             size: 24,
             color: Colors.white,
           ),
@@ -78,8 +79,8 @@ class Homepage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => SearchPageForm()));
           }
           if (index == 4) {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => TestPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ApplicationSettings()));
           }
         },
       ),

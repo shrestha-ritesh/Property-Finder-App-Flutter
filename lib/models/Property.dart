@@ -10,16 +10,20 @@ String propertyToJson(Property data) => json.encode(data.toJson());
 
 class Property {
   Property({
+    this.success,
     this.data,
   });
 
+  int success;
   List<Datum> data;
 
   factory Property.fromJson(Map<String, dynamic> json) => Property(
+        success: json["success"],
         data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
+        "success": success,
         "data": List<dynamic>.from(data.map((x) => x.toJson())),
       };
 }
@@ -43,6 +47,8 @@ class Datum {
     this.propertyAddedDate,
     this.userId,
     this.thumbnailImage,
+    this.longitude,
+    this.latitude,
     this.images,
     this.otherDetails,
     this.userDetail,
@@ -65,6 +71,8 @@ class Datum {
   DateTime propertyAddedDate;
   int userId;
   String thumbnailImage;
+  String longitude;
+  String latitude;
   List<String> images;
   OtherDetails otherDetails;
   UserDetail userDetail;
@@ -87,6 +95,8 @@ class Datum {
         propertyAddedDate: DateTime.parse(json["property_added_date"]),
         userId: json["userId"],
         thumbnailImage: json["thumbnail_image"],
+        longitude: json["longitude"],
+        latitude: json["latitude"],
         images: List<String>.from(json["images"].map((x) => x)),
         otherDetails: json["other_details"] == null
             ? null
@@ -112,6 +122,8 @@ class Datum {
         "property_added_date": propertyAddedDate.toIso8601String(),
         "userId": userId,
         "thumbnail_image": thumbnailImage,
+        "longitude": longitude,
+        "latitude": latitude,
         "images": List<dynamic>.from(images.map((x) => x)),
         "other_details": otherDetails == null ? null : otherDetails.toJson(),
         "user_detail": userDetail.toJson(),

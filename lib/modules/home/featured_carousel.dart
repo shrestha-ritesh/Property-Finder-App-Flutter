@@ -55,8 +55,12 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
               GestureDetector(
                 onTap: () async {
                   print('This is see more');
-                  await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ListViewPage()));
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ListViewPage(
+                                property: _property,
+                              )));
                 },
                 child: Text(
                   'See more',

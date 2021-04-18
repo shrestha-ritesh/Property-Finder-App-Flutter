@@ -14,6 +14,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/config/config.dart';
+import 'package:propertyfinder/extra/maps.dart';
 import 'package:propertyfinder/models/add_property_model.dart';
 // import 'package:propertyfinder/models/property_model.dart';
 import '../../appBar.dart';
@@ -29,6 +30,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
   final picker = ImagePicker();
   //Implementing controller:
   TextEditingController propertyaddress = TextEditingController();
+  TextEditingController latitude = TextEditingController();
+  TextEditingController longitude = TextEditingController();
   TextEditingController builtUpArea = TextEditingController();
   TextEditingController totalArea = TextEditingController();
   TextEditingController roadDistance = TextEditingController();
@@ -135,15 +138,6 @@ class _BasicPageFormState extends State<BasicPageForm> {
 
   int _currentStep = 0;
 
-  // StepperType _stepperType = StepperType.horizontal;
-  // switchStepType() {
-  //   setState(() {
-  //     _stepperType == StepperType.vertical
-  //         ? _stepperType = StepperType.horizontal
-  //         : _stepperType = StepperType.vertical;
-  //   });
-  // }
-
   //
   String selectRadio = 'Sale';
   String chosenPropertyType;
@@ -245,11 +239,6 @@ class _BasicPageFormState extends State<BasicPageForm> {
                       );
                       scaffoldKey.currentState.showSnackBar(snackbar);
                       print(value.message);
-                      //Navigate to another page
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => TestPage()));
                     } else {
                       final snackbar = SnackBar(
                         content: Text(value.error),
@@ -264,7 +253,6 @@ class _BasicPageFormState extends State<BasicPageForm> {
                   // scaffoldKey.currentState.showSnackBar(snackbar);
                   showAlertDialog(context);
                 }
-                // _saveImage();
               }
             });
           },
@@ -505,6 +493,78 @@ class _BasicPageFormState extends State<BasicPageForm> {
                   ),
                 ),
               ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 14),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Select Location",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      FlatButton(
+                        padding: EdgeInsets.symmetric(horizontal: 4),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            side: BorderSide(color: Colors.blueGrey[600])),
+                        color: Colors.grey[300],
+                        child: Text("Pick Location"),
+                        onPressed: () async {
+                          print("Open Google map");
+                          final info = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MapsGoogle()));
+                          print(info.latitude.toString());
+                          setState(() {
+                            latitude.text = info.latitude.toString();
+                            longitude.text = info.longitude.toString();
+                            print("asdfsadf" + latitude.text);
+                            print("saasdf" + longitude.text);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Column(
+                          children: [
+                            Text("Latitude"),
+                            TextFormField(
+                              decoration: InputDecoration(labelText: "e.g. 12"),
+                              controller: latitude,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 160,
+                        child: Column(
+                          children: [
+                            Text("Longitude"),
+                            TextFormField(
+                              decoration: InputDecoration(labelText: "e.g. 12"),
+                              controller: longitude,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -960,28 +1020,29 @@ class _BasicPageFormState extends State<BasicPageForm> {
   //Setting the data in the addproperty model:
   void sendValidData() {
     addProperty = AddProperty(
-      property_name: propertyTitle.text,
-      property_description: propertyDescription.text,
-      property_price: propertyPrice.text,
-      property_status: selectRadio,
-      property_type: chosenPropertyType,
-      property_address: propertyaddress.text,
-      property_city: chosenValue,
-      property_located_area: chosenValue,
-      built_up_area: builtUpArea.text + " " + chosenBuiltArea,
-      property_total_area: totalArea.text + " " + chosenTotalArea,
-      property_face: propertyFace,
-      road_distance: roadDistance.text + " " + roadDistanceType,
-      road_type: roadType,
-      bathroom: bathroom.text,
-      rooms: rooms.text,
-      kitchen: kitchen.text,
-      living_room: livingroom.text,
-      parking: garage.text,
-      built_year: builtDate.text,
-      total_floors: totalFloors.text,
-      bedroom: bedroom.text,
-    );
+        property_name: propertyTitle.text,
+        property_description: propertyDescription.text,
+        property_price: propertyPrice.text,
+        property_status: selectRadio,
+        property_type: chosenPropertyType,
+        property_address: propertyaddress.text,
+        property_city: chosenValue,
+        property_located_area: chosenValue,
+        built_up_area: builtUpArea.text + " " + chosenBuiltArea,
+        property_total_area: totalArea.text + " " + chosenTotalArea,
+        property_face: propertyFace,
+        road_distance: roadDistance.text + " " + roadDistanceType,
+        road_type: roadType,
+        bathroom: bathroom.text,
+        rooms: rooms.text,
+        kitchen: kitchen.text,
+        living_room: livingroom.text,
+        parking: garage.text,
+        built_year: builtDate.text,
+        total_floors: totalFloors.text,
+        bedroom: bedroom.text,
+        longitude: longitude.text,
+        latitude: latitude.text);
   }
 
   //Validation of texfields

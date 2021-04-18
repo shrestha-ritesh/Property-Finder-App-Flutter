@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propertyfinder/modules/searchPage/search.dart';
 
 class FilterChipWidget extends StatefulWidget {
   final String chipName;
@@ -13,6 +14,7 @@ class FilterChipWidget extends StatefulWidget {
 class _FilterChipWidgetState extends State<FilterChipWidget> {
   bool isSelected = false;
   int defaultChoiceIndex;
+  String selectedValue;
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -36,7 +38,16 @@ class _FilterChipWidgetState extends State<FilterChipWidget> {
               setState(() {
                 defaultChoiceIndex = value ? index : null;
                 print(widget.passedItems[defaultChoiceIndex]);
+                selectedValue = widget.passedItems[defaultChoiceIndex];
+                MaterialPageRoute(
+                    builder: (context) =>
+                        SearchPageForm(passedPropertyFace: selectedValue));
               });
+              // if (widget.chipName == "elements") {
+              //   SearchPageForm(passedPropertyFace: selectedValue);
+              // } else {
+              //   SearchPageForm(passedPropertyStatus: selectedValue);
+              // }
             },
             selectedColor: Colors.blueGrey[600],
           ),

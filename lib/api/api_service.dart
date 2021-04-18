@@ -3,11 +3,13 @@
 import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:propertyfinder/config/config.dart';
+import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/models/add_property_model.dart';
 import 'dart:convert';
 import 'package:propertyfinder/models/login_module.dart';
 import 'package:propertyfinder/models/register_module.dart';
 import 'package:propertyfinder/models/requestModel.dart';
+import 'package:propertyfinder/models/searchRequest.dart';
 import 'package:propertyfinder/models/sendFavourites.dart';
 
 class ApiService {
@@ -134,6 +136,32 @@ class ApiService {
       }
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  Future<List<Datum>> searchProperty(SearchRequest searchRequest) async {
+    String token = await FlutterSession().get("token");
+
+    String url = BASE_URL + "search/getSearchData";
+
+    final response = await http.post(
+      url,
+      headers: {
+        "authorization": "$token",
+      },
+      body: searchRequest.toJson(),
+    );
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        final body = response.body;
+        final searchedProperties = propertyFromJson(body);
+        List<Datum> searchProp = searchedProperties.data;
+        print(searchProp[0]);
+        return searchProp;
+      }
+    } catch (e) {
+      // throw Exception(e);
+      return List<Datum>();
     }
   }
 }

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_session/flutter_session.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:propertyfinder/api/api_get.dart';
 import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/extra/imageDialog.dart';
@@ -61,10 +64,10 @@ class _PropertyListsViewState extends State<PropertyListsView> {
     int user_Id = userId;
     print(user_Id);
     for (var i = 0; i < favourites.length; i++) {
-      print("Tero bajeyfav " + favourites[i].propertyId.toString());
-      print("Tero bajeyfav " + favourites[i].userId.toString());
-      print("Tero asdfadf " + prop_id.toString());
-      print("Tero lsfda " + user_Id.toString());
+      // print("Tero bajeyfav " + favourites[i].propertyId.toString());
+      // print("Tero bajeyfav " + favourites[i].userId.toString());
+      // print("Tero asdfadf " + prop_id.toString());
+      // print("Tero lsfda " + user_Id.toString());
       changedFavourites.add(favourites[i]);
       if (prop_id == favourites[i].propertyId &&
           user_Id == favourites[i].userId) {
@@ -95,6 +98,24 @@ class _PropertyListsViewState extends State<PropertyListsView> {
     print("This is check fav ==>" + checkFav.toString());
 
     pageController = PageController(initialPage: 1, viewportFraction: 0.8);
+  }
+
+  Set<Marker> _markers = {};
+  // GoogleMapController controller;
+  GoogleMapController controller;
+
+  _onMapCreated(GoogleMapController controller) {
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId('mark-i'),
+          position: LatLng(
+            double.parse(widget.property.latitude),
+            double.parse(widget.property.longitude),
+          ),
+        ),
+      );
+    });
   }
 
   @override
@@ -813,11 +834,45 @@ class _PropertyListsViewState extends State<PropertyListsView> {
 
                   //For Location
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-                    child: Text(
-                      "Location (Map)",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 1),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Location (Map)",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 10,
+                                blurRadius: 10,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          width: size.width,
+                          height: size.height * 0.30,
+                          child: GoogleMap(
+                            onMapCreated: _onMapCreated(controller),
+                            markers: _markers,
+                            initialCameraPosition: CameraPosition(
+                              target: LatLng(
+                                double.parse(widget.property.latitude),
+                                double.parse(widget.property.longitude),
+                              ),
+                              zoom: 14.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   //Request for inspection

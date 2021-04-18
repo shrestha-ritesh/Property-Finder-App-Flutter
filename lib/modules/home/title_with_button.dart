@@ -17,22 +17,22 @@ class HeaderButton extends StatelessWidget {
         children: <Widget>[
           BodyTitle(text: "Categories"),
           Spacer(),
-          FlatButton.icon(
-            padding: EdgeInsets.only(left: 2, right: 10),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            color: Colors.blueGrey[600],
-            onPressed: () {},
-            label: Text(
-              'See more',
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-            icon: Icon(
-              Icons.chevron_right,
-              color: Colors.white,
-              size: 18,
-            ),
-          )
+          // FlatButton.icon(
+          //   padding: EdgeInsets.only(left: 2, right: 10),
+          //   shape:
+          //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          //   color: Colors.blueGrey[600],
+          //   onPressed: () {},
+          //   label: Text(
+          //     'See more',
+          //     style: TextStyle(color: Colors.white, fontSize: 12),
+          //   ),
+          //   icon: Icon(
+          //     Icons.chevron_right,
+          //     color: Colors.white,
+          //     size: 18,
+          //   ),
+          // )
         ],
       ),
     );

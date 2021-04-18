@@ -3,24 +3,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:propertyfinder/api/api_get.dart';
 import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/modules/listview_page/property_lists.dart';
+
 import '../filter_section.dart';
 
-// class ListviewPage extends StatelessWidget {
-//   List<Property> properties = getPropertyDetails();
-//   @override
-//   Widget build(BuildContext context) {
+class UserListedProperty extends StatefulWidget {
+  // List<Datum> property;
 
-// }
-
-class ListViewPage extends StatefulWidget {
-  List<Datum> property;
-
-  ListViewPage({@required this.property});
+  // UserListedProperty({@required this.property});
   @override
-  _ListViewPageState createState() => _ListViewPageState();
+  _UserListedPropertyState createState() => _UserListedPropertyState();
 }
 
-class _ListViewPageState extends State<ListViewPage> {
+class _UserListedPropertyState extends State<UserListedProperty> {
   // List<Property> properties = getPropertyDetails();
   List<Datum> properties = [];
   bool _loading;
@@ -28,154 +22,29 @@ class _ListViewPageState extends State<ListViewPage> {
   @override
   void initState() {
     super.initState();
-    // Services.getProperty().then((property) {
-    //   setState(() {
-    //     properties = property;
-    //     _loading = false;
-    //   });
-    // });
-    setState(() {
-      properties = widget.property;
+    Services.getProperty().then((property) {
+      setState(() {
+        properties = property;
+        _loading = false;
+      });
     });
+    // setState(() {
+    //   properties = widget.property;
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Listed properties"),
+        backgroundColor: Colors.blueGrey[600],
+      ),
+      // backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              height: 70,
-              decoration: BoxDecoration(
-                color: Colors.blueGrey[600],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 24, bottom: 12, left: 5, right: 5),
-                child: Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Flexible(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.search,
-                            size: 20,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'Search Property',
-                          hintStyle: TextStyle(
-                              color: Colors.blueGrey[600].withOpacity(0.5),
-                              fontSize: 15),
-                          contentPadding:
-                              EdgeInsets.only(top: 0.25, left: 4, right: 4),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          // border: OutlineInputBorder(
-                          //   borderRadius: BorderRadius.circular(2),
-                          //   borderSide: BorderSide(color: Colors.black),
-                          // ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    IconButton(
-                      icon: FaIcon(
-                        FontAwesomeIcons.filter,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      onPressed: () {
-                        _showBottomSheet(context);
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ),
-            // Container(
-            //   color: Colors.blueGrey[600],
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(top: 16, bottom: 8, left: 12),
-            //     // child: Row(
-            //     //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     //   children: <Widget>[
-            //     //     Expanded(
-            //     //       child: Container(
-            //     //         height: 32,
-            //     //         child: Stack(
-            //     //           children: <Widget>[
-            //     //             ListView(
-            //     //               physics: BouncingScrollPhysics(),
-            //     //               scrollDirection: Axis.horizontal,
-            //     //               children: <Widget>[
-            //     //                 filterOptions("Option 1"),
-            //     //                 filterOptions("Option 2"),
-            //     //                 filterOptions("Option 3"),
-            //     //                 filterOptions("Option 4"),
-            //     //                 filterOptions("Option 5"),
-            //     //               ],
-            //     //             ),
-            //     //             Align(
-            //     //               alignment: Alignment.centerRight,
-            //     //               child: Container(
-            //     //                 width: 28,
-            //     //                 decoration: BoxDecoration(
-            //     //                   gradient: LinearGradient(
-            //     //                     begin: Alignment.centerRight,
-            //     //                     end: Alignment.centerLeft,
-            //     //                     stops: [0.0, 10.0],
-            //     //                     colors: [
-            //     //                       Colors.blueGrey[600],
-            //     //                       Colors.blueGrey[600].withOpacity(0.0),
-            //     //                     ],
-            //     //                   ),
-            //     //                 ),
-            //     //               ),
-            //     //             )
-            //     //           ],
-            //     //         ),
-            //     //       ),
-            //     //     ),
-            //     //     Padding(
-            //     //       padding: EdgeInsets.only(left: 10, right: 24),
-            //     //       child: Text(
-            //     //         'Filters',
-            //     //         style: TextStyle(
-            //     //           fontSize: 18,
-            //     //           fontWeight: FontWeight.w600,
-            //     //           color: Colors.white,
-            //     //         ),
-            //     //       ),
-            //     //     ),
-            //     //   ],
-            //     // ),
-            //   ),
-            // ),
             Padding(
               padding:
                   EdgeInsets.only(right: 24, left: 24, top: 18, bottom: 10),
@@ -192,11 +61,14 @@ class _ListViewPageState extends State<ListViewPage> {
                     width: 10,
                   ),
                   Text(
-                    'Results Found',
+                    'Listed Properties',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 24,
                     ),
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                 ],
               ),
@@ -362,10 +234,17 @@ class _ListViewPageState extends State<ListViewPage> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Icon(
-                          Icons.attach_money,
-                          color: Colors.black,
-                          size: 20,
+                        // Icon(
+                        //   Icons.attach_money,
+                        //   color: Colors.black,
+                        //   size: 20,
+                        // ),
+                        Text(
+                          ("Rs"),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         SizedBox(
                           width: 5,
