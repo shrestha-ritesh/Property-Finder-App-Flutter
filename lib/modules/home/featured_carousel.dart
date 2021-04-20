@@ -165,7 +165,30 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                                   child: (property.propertyType == "Land" ||
                                           property.propertyType == "Business")
                                       ? Row(
-                                          children: [Text("Land And Building")],
+                                          children: [
+                                            Icon(
+                                              Icons.directions,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              property.propertyFace,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Icon(
+                                              Icons.single_bed,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                          ],
                                         )
                                       : Row(
                                           children: [

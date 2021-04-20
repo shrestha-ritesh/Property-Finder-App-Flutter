@@ -1,7 +1,12 @@
 //Importing flutter http package for api
 
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:propertyfinder/config/config.dart';
 import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/models/add_property_model.dart';
@@ -11,6 +16,7 @@ import 'package:propertyfinder/models/register_module.dart';
 import 'package:propertyfinder/models/requestModel.dart';
 import 'package:propertyfinder/models/searchRequest.dart';
 import 'package:propertyfinder/models/sendFavourites.dart';
+import 'package:propertyfinder/models/userProfileUpdate.dart';
 
 class ApiService {
   //creating the method of future type with the reponse type of LoginResponse Model
@@ -162,6 +168,84 @@ class ApiService {
     } catch (e) {
       // throw Exception(e);
       return List<Datum>();
+    }
+  }
+
+  //For Updating the user profile:
+  Future<UpdateProfileResponse> updateProfile(
+      UpdateProfile updateProfile) async {
+    int user_id = await FlutterSession().get("id");
+    String token = await FlutterSession().get("token");
+    String url = BASE_URL + 'users/updateUser/$user_id';
+
+    final response = await http.patch(url,
+        headers: {
+          "authorization": "$token",
+        },
+        body: updateProfile.toJson());
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        return UpdateProfileResponse.fromJson(json.decode(response.body));
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  //For Evidence image
+  Dio dio = Dio();
+  saveEvidenceImage(var images) async {
+    if (images != null) {
+      int count = 0;
+      for (var i = 0; i < images.length; i++) {
+        ByteData byteData = await images[i].getByteData();
+        List<int> imageData = byteData.buffer.asUint8List();
+
+        MultipartFile multipartFile = MultipartFile.fromBytes(
+          imageData,
+          filename: images[i].name,
+          contentType: MediaType('image', 'jpg'),
+        );
+
+        FormData formData = FormData.fromMap({"image": multipartFile});
+
+        //Image post
+        String token = await FlutterSession().get("token");
+        int propID = await FlutterSession().get("propertyid");
+        var response = await dio.post(EVIDENCE_URL + "/$propID",
+            data: formData,
+            options: Options(
+              headers: {"authorization": "$token"},
+            ));
+        if (response.statusCode == 200) {
+          EasyLoading.showSuccess('eVIDENCE STORED!');
+          print(response.data);
+        }
+      }
+    } else {}
+  }
+
+  //Requesting the patch method of the serverwith specific URL:
+  Future<UpdateResponse> updateProperty(AddProperty addProperty) async {
+    String token = await FlutterSession().get("token");
+    int property_id = await FlutterSession().get("propertyid");
+
+    String url = BASE_URL + "property/updateListedProperty/$property_id";
+
+    final response = await http.patch(
+      url,
+      headers: {
+        "authorization": "$token",
+      },
+      body: addProperty.toJson(),
+    );
+    print(response.body);
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        return UpdateResponse.fromJson(json.decode(response.body));
+      }
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

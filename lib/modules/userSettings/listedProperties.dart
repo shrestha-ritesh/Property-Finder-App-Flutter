@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:propertyfinder/api/api_get.dart';
 import 'package:propertyfinder/models/Property.dart';
+import 'package:propertyfinder/models/add_property_model.dart';
+import 'package:propertyfinder/modules/addProperty/basicForm_page.dart';
 import 'package:propertyfinder/modules/listview_page/property_lists.dart';
+import 'package:propertyfinder/modules/userSettings/editListedProperty.dart';
 
 import '../filter_section.dart';
 
@@ -16,13 +19,14 @@ class UserListedProperty extends StatefulWidget {
 
 class _UserListedPropertyState extends State<UserListedProperty> {
   // List<Property> properties = getPropertyDetails();
+  GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   List<Datum> properties = [];
   bool _loading;
 
   @override
   void initState() {
     super.initState();
-    Services.getProperty().then((property) {
+    Services.getuserListedProperty().then((property) {
       setState(() {
         properties = property;
         _loading = false;
@@ -35,6 +39,7 @@ class _UserListedPropertyState extends State<UserListedProperty> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text("Listed properties"),
@@ -49,26 +54,43 @@ class _UserListedPropertyState extends State<UserListedProperty> {
               padding:
                   EdgeInsets.only(right: 24, left: 24, top: 18, bottom: 10),
               child: Row(
-                children: <Widget>[
-                  Text(
-                    properties.length.toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 24,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        properties.length.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 24,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Listed Properties',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 24,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                  FlatButton(
+                    color: Colors.grey[400],
+                    onPressed: () {
+                      print("Sort button pressed");
+                    },
+                    child: Row(
+                      children: [
+                        Text("Sort"),
+                        Icon(Icons.sort),
+                      ],
                     ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Listed Properties',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 24,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
                   ),
                 ],
               ),
@@ -79,9 +101,17 @@ class _UserListedPropertyState extends State<UserListedProperty> {
                   horizontal: 15,
                 ),
                 child: ListView(
+                  key: _listKey,
                   physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
-                  children: buildProperties(context),
+                  children: (properties.length <= 0)
+                      ? <Widget>[
+                          Container(
+                            width: size.width,
+                            child: _notPropertyLists(),
+                          ),
+                        ]
+                      : buildProperties(context),
                 ),
               ),
             ),
@@ -185,28 +215,60 @@ class _UserListedPropertyState extends State<UserListedProperty> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 2),
+                      padding: EdgeInsets.symmetric(vertical: 1),
                       child: Center(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
-                              "For " + property.propertyStatus,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  "For " + property.propertyStatus,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text(
+                                  property.propertyType,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text(
-                              property.propertyType,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: [
+                                buildIconButton(
+                                  Icons.edit_sharp,
+                                  () {
+                                    print("Button has been pressed");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditPropertyPage(
+                                                  property: property,
+                                                )));
+                                  },
+                                  Colors.green[100],
+                                ),
+                                buildIconButton(
+                                  Icons.delete_rounded,
+                                  () {
+                                    setState(() {
+                                      properties.removeAt(index);
+                                    });
+                                  },
+                                  Colors.red,
+                                )
+                              ],
                             ),
                           ],
                         ),
@@ -307,6 +369,47 @@ class _UserListedPropertyState extends State<UserListedProperty> {
           ],
         );
       },
+    );
+  }
+
+  Widget buildIconButton(IconData iconData, VoidCallback press, Color colors) {
+    return IconButton(
+        icon: Icon(
+          iconData,
+          color: colors,
+          size: 24,
+        ),
+        onPressed: press);
+  }
+
+  Widget _notPropertyLists() {
+    return Column(
+      children: [
+        Text(
+          "You have not added property !\n List today!",
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        FlatButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => BasicPageForm()));
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add,
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              Text("Add Property"),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -74,6 +74,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
   }
 
   List<Asset> images = [];
+  List<Asset> imagesv2 = [];
+
   Dio dio = Dio();
 
   Widget buildGridView() {
@@ -97,8 +99,8 @@ class _BasicPageFormState extends State<BasicPageForm> {
       crossAxisCount: 3,
       crossAxisSpacing: 7,
       mainAxisSpacing: 5,
-      children: List.generate(images.length, (index) {
-        Asset asset = images[index];
+      children: List.generate(imagesv2.length, (index) {
+        Asset asset = imagesv2[index];
         return AssetThumb(
           asset: asset,
           width: 120,
@@ -133,6 +135,33 @@ class _BasicPageFormState extends State<BasicPageForm> {
     setState(() {
       images = resultList;
       print(images);
+    });
+  }
+
+  Future<void> loadAssetsv2() async {
+    List<Asset> resultListv2 = [];
+    try {
+      resultListv2 = await MultiImagePicker.pickImages(
+        maxImages: 300,
+        enableCamera: true,
+        selectedAssets: imagesv2,
+        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+        materialOptions: MaterialOptions(
+          actionBarColor: "#657780",
+          actionBarTitle: "Photos",
+          allViewTitle: "All Photos",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#657780",
+        ),
+      );
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+    if (!mounted) return;
+
+    setState(() {
+      imagesv2 = resultListv2;
+      print(imagesv2);
     });
   }
 
@@ -222,14 +251,16 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 //condition for posting the data in backend
                 if (validate()) {
                   ApiService apiService = new ApiService();
-                  apiService.addproperty(addProperty).then((value) {
+                  apiService.addproperty(addProperty).then((value) async {
                     if (value.message.isNotEmpty) {
                       session.set("propertyid", value.propertyid);
                       print('Propertyid');
                       if (value.success == 1) {
-                        _saveImage();
+                        await _saveImage();
                         //For single content upload
-                        singleUpload();
+                        // singleUpload();
+                        // For Evidence upload:
+                        await apiService.saveEvidenceImage(imagesv2);
                         print('Test');
                       } else {
                         print(value.error);
@@ -949,7 +980,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 child: SingleChildScrollView(
                   child: Container(
                     height: 150,
-                    child: buildGridView1(),
+                    child: buildGridView(),
                   ),
                 ),
               ),
@@ -969,6 +1000,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
           style: TextStyle(fontSize: 17),
         ),
         content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextFormField(
               decoration: InputDecoration(labelText: "Property Title"),
@@ -984,26 +1016,41 @@ class _BasicPageFormState extends State<BasicPageForm> {
               controller: propertyPrice,
             ),
             SizedBox(
-              height: 20,
+              height: 30,
+            ),
+            Text(
+              'Evidence',
+              style: TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             //For sinlge eimage picker for the main image of the post
-            FlatButton.icon(
-              onPressed: () {
-                selectImage();
-              },
-              icon: Icon(Icons.image),
-              label: Text('Select Main Image'),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Column(
+                children: [
+                  FlatButton.icon(
+                    onPressed: loadAssetsv2,
+                    icon: Icon(Icons.image),
+                    label: Text('Select Evidence'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    color: Colors.black12,
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: SingleChildScrollView(
+                      child: Container(
+                        height: 150,
+                        child: buildGridView1(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              color: Colors.black12,
-            ),
-            SizedBox(height: 20),
-            Container(
-              width: 350,
-              child: _image == null
-                  ? Text('Please select image!')
-                  : Image.file(_image),
             ),
           ],
         ),

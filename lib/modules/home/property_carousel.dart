@@ -178,7 +178,56 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
                                   child: (property.propertyType == "Land" ||
                                           property.propertyType == "Business")
                                       ? Row(
-                                          children: [Text("Land And Building")],
+                                          children: [
+                                            Icon(
+                                              Icons.directions,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              property.propertyFace,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Icon(
+                                              Icons.aspect_ratio,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              property.propertyTotalArea,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Icon(
+                                              Icons.location_city,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              property.propertyTotalArea,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
                                         )
                                       : Row(
                                           children: [

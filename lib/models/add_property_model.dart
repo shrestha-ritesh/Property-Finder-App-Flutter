@@ -112,3 +112,18 @@ class AddPropertyResponse {
         success: json["success"] != null ? json["success"] : "");
   }
 }
+
+class UpdateResponse {
+  final String error;
+  final String message;
+  final int success;
+
+  UpdateResponse({this.error, this.message, this.success});
+
+  factory UpdateResponse.fromJson(Map<String, dynamic> json) {
+    return UpdateResponse(
+        message: json["message"] != null ? json["message"] : "",
+        error: json["error"] != null ? json["error"] : "",
+        success: json["success"] != null ? json["success"] : "");
+  }
+}

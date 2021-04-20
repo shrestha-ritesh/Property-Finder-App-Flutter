@@ -2,6 +2,7 @@ import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:propertyfinder/config/config.dart';
 import 'package:propertyfinder/models/Favourites.dart';
+import 'package:propertyfinder/models/User.dart';
 import '../models/Property.dart';
 // class GetApi {
 //   Future<String> getImageData() async {
@@ -77,6 +78,42 @@ class Services {
       }
     } catch (e) {
       return List<Datum>();
+    }
+  }
+
+  //Getting the listed property data based on the user listings:
+  static Future<List<Datum>> getuserListedProperty() async {
+    int userId = await FlutterSession().get("id");
+    String url = BASE_URL + "property/getlistedProperty/$userId";
+    print(url);
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final body = response.body;
+        final userListedProperty = propertyFromJson(body);
+        List<Datum> userListProperty = userListedProperty.data;
+        return userListProperty;
+      }
+    } catch (e) {
+      return List<Datum>();
+    }
+  }
+
+  //Getting the user data from the api
+  static Future<List<User>> getUserData() async {
+    int userId = await FlutterSession().get("id");
+    String url = BASE_URL + "users/profile/$userId";
+    print(url);
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final body = response.body;
+        final userData = usersFromJson(body);
+        List<User> userLists = userData.data;
+        return userLists;
+      }
+    } catch (e) {
+      return List<User>();
     }
   }
 }
