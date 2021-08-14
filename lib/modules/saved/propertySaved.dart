@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:propertyfinder/api/api_get.dart';
 import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/modules/listview_page/property_lists.dart';
@@ -175,6 +176,10 @@ class _SavedPropertiesState extends State<SavedProperties> {
                                 onPressed: () {
                                   setState(() {
                                     savedValue = !savedValue;
+                                    if (!savedValue) {
+                                      EasyLoading.showSuccess(
+                                          'Successfully Removed!');
+                                    }
                                     print('Pressed favorite button');
                                   });
                                 },

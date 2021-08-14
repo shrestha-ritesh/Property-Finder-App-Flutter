@@ -6,6 +6,7 @@ import 'package:propertyfinder/modules/home/home_body.dart';
 import 'package:propertyfinder/modules/saved/propertySaved.dart';
 import 'package:propertyfinder/modules/searchPage/search.dart';
 import 'package:propertyfinder/modules/userSettings/applicationSettings.dart';
+import 'package:propertyfinder/modules/userSettings/listedProperties.dart';
 
 import '../../test_page.dart';
 
@@ -19,7 +20,7 @@ class Homepage extends StatelessWidget {
       key: _key,
       backgroundColor: Colors.grey.shade100,
       appBar: homeAppBar(),
-      drawer: _buildDrawer(),
+      drawer: _buildDrawer(context),
       body: HomeBody(),
       bottomNavigationBar:
           //Changes
@@ -144,25 +145,36 @@ class Homepage extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(IconData icon, String title) {
+  Widget _buildRow(IconData icon, String title, BuildContext context) {
     final TextStyle tStyle = TextStyle(color: active, fontSize: 16.0);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(children: [
-        Icon(
-          icon,
-          color: active,
-        ),
-        SizedBox(width: 10.0),
-        Text(
-          title,
-          style: tStyle,
-        ),
-      ]),
+      child: GestureDetector(
+        onTap: () {
+          if (title == "Your Profile") {
+            Navigator.push(
+                context,
+                // MaterialPageRoute(
+                //     builder: (context) => PropertyListsView(property: property)));
+                MaterialPageRoute(builder: (context) => UserListedProperty()));
+          }
+        },
+        child: Row(children: [
+          Icon(
+            icon,
+            color: active,
+          ),
+          SizedBox(width: 10.0),
+          Text(
+            title,
+            style: tStyle,
+          ),
+        ]),
+      ),
     );
   }
 
-  _buildDrawer() {
+  _buildDrawer(BuildContext context) {
     return ClipPath(
       clipper: DrawerOvalClipper(),
       child: Drawer(
@@ -209,15 +221,15 @@ class Homepage extends StatelessWidget {
                     style: TextStyle(color: active, fontSize: 16.0),
                   ),
                   SizedBox(height: 30.0),
-                  _buildRow(Icons.home, "Home"),
+                  _buildRow(Icons.home, "Home", context),
                   _buildDivider(),
-                  _buildRow(Icons.person_pin, "Your profile"),
+                  _buildRow(Icons.person_pin, "Your profile", context),
                   _buildDivider(),
-                  _buildRow(Icons.settings, "Settings"),
+                  _buildRow(Icons.settings, "Settings", context),
                   _buildDivider(),
-                  _buildRow(Icons.email, "Contact us"),
+                  _buildRow(Icons.email, "Contact us", context),
                   _buildDivider(),
-                  _buildRow(Icons.info_outline, "Help"),
+                  _buildRow(Icons.info_outline, "Help", context),
                   _buildDivider(),
                 ],
               ),

@@ -10,20 +10,16 @@ String propertyToJson(Property data) => json.encode(data.toJson());
 
 class Property {
   Property({
-    this.success,
     this.data,
   });
 
-  int success;
   List<Datum> data;
 
   factory Property.fromJson(Map<String, dynamic> json) => Property(
-        success: json["success"],
         data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "success": success,
         "data": List<dynamic>.from(data.map((x) => x.toJson())),
       };
 }
@@ -46,12 +42,12 @@ class Datum {
     this.roadType,
     this.propertyAddedDate,
     this.userId,
-    this.thumbnailImage,
     this.longitude,
     this.latitude,
+    this.status,
     this.images,
-    this.otherDetails,
     this.userDetail,
+    this.otherDetails,
   });
 
   int propertyId;
@@ -70,12 +66,12 @@ class Datum {
   String roadType;
   DateTime propertyAddedDate;
   int userId;
-  String thumbnailImage;
   String longitude;
   String latitude;
+  String status;
   List<String> images;
-  OtherDetails otherDetails;
   UserDetail userDetail;
+  OtherDetails otherDetails;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         propertyId: json["property_id"],
@@ -94,14 +90,14 @@ class Datum {
         roadType: json["road_type"],
         propertyAddedDate: DateTime.parse(json["property_added_date"]),
         userId: json["userId"],
-        thumbnailImage: json["thumbnail_image"],
         longitude: json["longitude"],
         latitude: json["latitude"],
+        status: json["status"],
         images: List<String>.from(json["images"].map((x) => x)),
+        userDetail: UserDetail.fromJson(json["user_detail"]),
         otherDetails: json["other_details"] == null
             ? null
             : OtherDetails.fromJson(json["other_details"]),
-        userDetail: UserDetail.fromJson(json["user_detail"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -121,68 +117,68 @@ class Datum {
         "road_type": roadType,
         "property_added_date": propertyAddedDate.toIso8601String(),
         "userId": userId,
-        "thumbnail_image": thumbnailImage,
         "longitude": longitude,
         "latitude": latitude,
+        "status": status,
         "images": List<dynamic>.from(images.map((x) => x)),
-        "other_details": otherDetails == null ? null : otherDetails.toJson(),
         "user_detail": userDetail.toJson(),
+        "other_details": otherDetails == null ? null : otherDetails.toJson(),
       };
 }
 
 class OtherDetails {
   OtherDetails({
-    this.houseId,
+    this.apartmentId,
     this.bedroom,
     this.rooms,
     this.kitchen,
     this.livingRoom,
+    this.bathroom,
     this.parking,
     this.propertyId,
+    this.houseId,
     this.builtYear,
     this.totalFloors,
-    this.apartmentId,
-    this.bathroom,
   });
 
-  int houseId;
+  int apartmentId;
   String bedroom;
   String rooms;
   String kitchen;
   String livingRoom;
+  String bathroom;
   String parking;
   int propertyId;
+  int houseId;
   String builtYear;
   String totalFloors;
-  int apartmentId;
-  String bathroom;
 
   factory OtherDetails.fromJson(Map<String, dynamic> json) => OtherDetails(
-        houseId: json["house_id"] == null ? null : json["house_id"],
+        apartmentId: json["apartment_id"] == null ? null : json["apartment_id"],
         bedroom: json["bedroom"],
         rooms: json["rooms"],
         kitchen: json["kitchen"],
         livingRoom: json["living_room"],
+        bathroom: json["bathroom"] == null ? null : json["bathroom"],
         parking: json["parking"],
         propertyId: json["property_id"],
+        houseId: json["house_id"] == null ? null : json["house_id"],
         builtYear: json["built_year"] == null ? null : json["built_year"],
         totalFloors: json["total_floors"] == null ? null : json["total_floors"],
-        apartmentId: json["apartment_id"] == null ? null : json["apartment_id"],
-        bathroom: json["bathroom"] == null ? null : json["bathroom"],
       );
 
   Map<String, dynamic> toJson() => {
-        "house_id": houseId == null ? null : houseId,
+        "apartment_id": apartmentId == null ? null : apartmentId,
         "bedroom": bedroom,
         "rooms": rooms,
         "kitchen": kitchen,
         "living_room": livingRoom,
+        "bathroom": bathroom == null ? null : bathroom,
         "parking": parking,
         "property_id": propertyId,
+        "house_id": houseId == null ? null : houseId,
         "built_year": builtYear == null ? null : builtYear,
         "total_floors": totalFloors == null ? null : totalFloors,
-        "apartment_id": apartmentId == null ? null : apartmentId,
-        "bathroom": bathroom == null ? null : bathroom,
       };
 }
 

@@ -48,7 +48,7 @@ class _AddPropertyMainState extends State<AddPropertyMain> {
                               height: 20,
                             ),
                             Text(
-                              'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+                              'Looking for the property? You can find the many property with differnet features and attributes as per your needs. This application provides the details information about the property available in all around Nepal.',
                               textAlign: TextAlign.justify,
                               style: TextStyle(
                                 fontSize: 15,

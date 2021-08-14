@@ -33,10 +33,7 @@ class Services {
         // List property = properties.data.toString();
         print(property[0].propertyAddress);
         return property;
-      } else {
-        print('Khali cha hai');
-        // return List<Property>();
-      }
+      } else {}
     } catch (e) {
       return List<Datum>();
     }

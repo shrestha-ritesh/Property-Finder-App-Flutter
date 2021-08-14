@@ -6,7 +6,6 @@ import 'modules/login_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  dynamic name = FlutterSession().get('name');
   runApp(MaterialApp(
     // home: name != '' ? Homepage() : Homepage(),
     home: MyApp(),

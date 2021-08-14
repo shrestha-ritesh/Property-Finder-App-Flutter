@@ -179,8 +179,12 @@ class _SearchPageFormState extends State<SearchPageForm>
                               padding: const EdgeInsets.only(left: 8.0),
                               child: Row(
                                 children: [
-                                  buildBody(size, listOfICons, categoriesTitle,
-                                      index),
+                                  buildBody(
+                                    size,
+                                    listOfICons,
+                                    categoriesTitle,
+                                    index,
+                                  ),
                                   SizedBox(
                                     width: 13,
                                   ),

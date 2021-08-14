@@ -10,9 +10,11 @@ import 'package:http_parser/http_parser.dart';
 import 'package:propertyfinder/config/config.dart';
 import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/models/add_property_model.dart';
+import 'package:propertyfinder/models/change_password_model.dart';
 import 'dart:convert';
 import 'package:propertyfinder/models/login_module.dart';
 import 'package:propertyfinder/models/register_module.dart';
+import 'package:propertyfinder/models/report_model.dart';
 import 'package:propertyfinder/models/requestModel.dart';
 import 'package:propertyfinder/models/searchRequest.dart';
 import 'package:propertyfinder/models/sendFavourites.dart';
@@ -243,6 +245,106 @@ class ApiService {
     try {
       if (response.statusCode == 200 || response.statusCode == 400) {
         return UpdateResponse.fromJson(json.decode(response.body));
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  //For removing the listed property
+  Future<DeleteResponse> removeListedProperty() async {
+    int prop_id = await FlutterSession().get("prop_id");
+
+    String token = await FlutterSession().get("token");
+
+    String url = BASE_URL + "property/deleteProperty/$prop_id";
+    print(url);
+
+    final response = await http.delete(
+      url,
+      headers: {
+        "authorization": "$token",
+      },
+    );
+    print("This is the final response " + response.body);
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        return DeleteResponse.fromJson(json.decode(response.body));
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  // //Sending the inspection request to the server:
+  // Future<UserRequestResponse> userInspection(UserRequest userRequest) async {
+  //   int propId = await FlutterSession().get("property_id");
+  //   int userId = await FlutterSession().get("id");
+  //   String url = BASE_URL + "request/inspection/$propId/$userId";
+  //   print('This is userId ==> $userId');
+  //   print('This is property_Id ==> $propId');
+
+  //   final response = await http.post(
+  //     url,
+  //     body: userRequest.toJson(),
+  //   );
+  //   print("This is response body" + response.body);
+  //   try {
+  //     if (response.statusCode == 200 || response.statusCode == 400) {
+  //       return UserRequestResponse.fromJson(json.decode(response.body));
+  //     }
+  //   } catch (e) {
+  //     throw Exception(e);
+  //   }
+  // }
+  //Sending the report request to the server:
+
+  //Sending the post request to the server:
+  Future<ReportResponse> addReportProperty(ReportRequest reportRequest) async {
+    int propId = await FlutterSession().get("property_id");
+    int userId = await FlutterSession().get("id");
+    String token = await FlutterSession().get("token");
+    String url = BASE_URL + "property/addReport/$propId/$userId";
+    print('This is the user ID: $userId');
+    print('This is the propertyID $propId');
+
+    final response = await http.post(
+      url,
+      headers: {
+        "authorization": "$token",
+      },
+      body: reportRequest.toJson(),
+    );
+    print("This is the reponse Body" + response.body);
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        return ReportResponse.fromJson(json.decode(response.body));
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  //Api connection for change password:
+
+  Future<ChangePasswordResponse> changePasswordApi(
+      ChangePasswordRequest changePasswordRequest) async {
+    int userId = await FlutterSession().get("id");
+    String token = await FlutterSession().get("token");
+    String url = BASE_URL + "users/changepassword/$userId";
+    print('This is user ID: $userId');
+
+    final response = await http.post(
+      url,
+      headers: {
+        "authorization": "$token",
+      },
+      body: changePasswordRequest.toJson(),
+    );
+    print("Response body change password: " + response.body);
+    try {
+      if (response.statusCode == 200 || response.statusCode == 400) {
+        return ChangePasswordResponse.fromJson(json.decode(response.body));
       }
     } catch (e) {
       throw Exception(e);

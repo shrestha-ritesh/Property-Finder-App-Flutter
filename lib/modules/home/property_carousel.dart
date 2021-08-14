@@ -91,7 +91,7 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
           // color: Colors.grey,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: _property.length == null ? 0 : _property.length,
+            itemCount: _property.length == null ? 0 : 5,
             itemBuilder: (BuildContext context, int index) {
               Datum property = _property[index];
               PropertyLists propertyLists = propertyList[index];
@@ -161,7 +161,9 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
                                   height: 2,
                                 ),
                                 Text(
-                                  propertyLists.propertyAddress,
+                                  property.propertyCity +
+                                      ", " +
+                                      property.propertyLocatedArea,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14,
@@ -253,12 +255,12 @@ class _PropertyCarouselState extends State<PropertyCarousel> {
                                               color: Colors.black,
                                               size: 20,
                                             ),
-                                            Text(
-                                              property.otherDetails.bedroom,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
+                                            // Text(
+                                            //   property.otherDetails.bedroom,
+                                            //   style: TextStyle(
+                                            //     fontSize: 16,
+                                            //   ),
+                                            // ),
                                             SizedBox(
                                               width: 10,
                                             ),

@@ -11,7 +11,7 @@ import 'package:propertyfinder/extra/imageDialog.dart';
 import 'package:propertyfinder/models/Favourites.dart';
 import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/models/sendFavourites.dart';
-import 'package:propertyfinder/modules/home/ListHomePage/new_article.dart';
+import 'package:propertyfinder/modules/listview_page/report_page.dart';
 import 'package:propertyfinder/modules/listview_page/requestInspection.dart';
 
 // class PropertyListsView extends StatelessWidget {
@@ -78,28 +78,6 @@ class _PropertyListsViewState extends State<PropertyListsView> {
     return false;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    validData();
-    Services.getProperty().then((propertyData) {
-      setState(() {
-        property = propertyData;
-      });
-    });
-    //getting the favourites data:
-    Services.getFavouritesId().then((favourite) {
-      setState(() {
-        favourites = favourite;
-      });
-    });
-    buildit();
-    checkFav = buildFavourites();
-    print("This is check fav ==>" + checkFav.toString());
-
-    pageController = PageController(initialPage: 1, viewportFraction: 0.8);
-  }
-
   Set<Marker> _markers = {};
   // GoogleMapController controller;
   GoogleMapController controller;
@@ -116,6 +94,30 @@ class _PropertyListsViewState extends State<PropertyListsView> {
         ),
       );
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    validData();
+    buildFavourites();
+    Services.getProperty().then((propertyData) {
+      setState(() {
+        property = propertyData;
+      });
+    });
+    //getting the favourites data:
+    Services.getFavouritesId().then((favourite) {
+      setState(() {
+        favourites = favourite;
+      });
+    });
+    buildit();
+    checkFav = buildFavourites();
+    print("This is check fav ==>" + checkFav.toString());
+
+    pageController = PageController(initialPage: 1, viewportFraction: 0.8);
   }
 
   @override
@@ -284,11 +286,12 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                               ),
                               child: Center(
                                   child: IconButton(
-                                icon: Icon(!buildFavourites()
+                                icon: Icon(!checkFav
                                     ? Icons.favorite_border
                                     : Icons.favorite),
                                 onPressed: () async {
                                   setState(() {
+                                    print(checkFav);
                                     checkFav = !checkFav;
                                     buildFavourites();
                                     print('Pressed favorite button');
@@ -486,6 +489,24 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                               "|\t" + widget.property.propertyStatus,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
+                            SizedBox(width: 10),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.blueGrey[600],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Text(
+                                  widget.property.status,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(
@@ -522,15 +543,37 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text(
-                          "Rs.\t" +
-                              widget.property.propertyPrice.toString() +
-                              "/ Anna",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 21,
-                              color: Colors.blueGrey[600]),
+                        Container(
+                          child: (widget.property.propertyType == "House" ||
+                                  widget.property.propertyType == "Lamd")
+                              ? Text(
+                                  "Rs.\t" +
+                                      widget.property.propertyPrice.toString() +
+                                      "/ Anna",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 21,
+                                      color: Colors.blueGrey[600]),
+                                )
+                              : Text(
+                                  "Rs.\t" +
+                                      widget.property.propertyPrice.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 21,
+                                      color: Colors.blueGrey[600]),
+                                ),
                         ),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
+                        // Text(
+                        //   "Status: " + widget.property.status.toString(),
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     fontSize: 22,
+                        //   ),
+                        // ),
                         SizedBox(
                           height: 10,
                         ),
@@ -558,10 +601,152 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                           height: 10,
                         ),
                         Container(
-                          child: (widget.property.propertyType == "Land"
+                          child: (widget.property.propertyType == "Land" ||
+                                  widget.property.propertyType == "Business"
                               ? Column(
                                   children: [
-                                    Text("This is Land"),
+                                    Card(
+                                      clipBehavior: Clip
+                                          .antiAlias, // Needed to be searched
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 15),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Text("This is "),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [],
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          Colors.blueGrey[600],
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  5)),
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5),
+                                                      child: Text(
+                                                        "Detail Information: ",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Column(
+                                                            children: [
+                                                              buildDetailColumn(
+                                                                  "Total Area",
+                                                                  widget
+                                                                      .property
+                                                                      .propertyTotalArea),
+                                                              SizedBox(
+                                                                height: 7,
+                                                              ),
+                                                              buildDetailColumn(
+                                                                  "Built-up Area",
+                                                                  widget
+                                                                      .property
+                                                                      .builtUpArea),
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Column(
+                                                            children: [
+                                                              buildDetailColumn(
+                                                                  "Property Face",
+                                                                  widget
+                                                                      .property
+                                                                      .propertyFace),
+                                                              SizedBox(
+                                                                height: 7,
+                                                              ),
+                                                              Container(
+                                                                child: (widget.property.propertyType == "Land" ||
+                                                                        widget.property.propertyType ==
+                                                                            "Business" ||
+                                                                        widget.property.propertyType ==
+                                                                            "Apartment")
+                                                                    ? buildDetailColumn(
+                                                                        "Built Year",
+                                                                        "-")
+                                                                    : buildDetailColumn(
+                                                                        "Built Year",
+                                                                        widget
+                                                                            .property
+                                                                            .otherDetails
+                                                                            .builtYear),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Column(
+                                                            children: [
+                                                              buildDetailColumn(
+                                                                  "Road Accessed",
+                                                                  widget
+                                                                      .property
+                                                                      .roadDistance),
+                                                              SizedBox(
+                                                                height: 7,
+                                                              ),
+                                                              buildDetailColumn(
+                                                                  "Road type",
+                                                                  widget
+                                                                      .property
+                                                                      .roadType),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 )
                               : Card(
@@ -592,23 +777,49 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                                                       Icons.king_bed,
                                                     ),
                                                     SizedBox(width: 5),
-                                                    Text("Bed Rooms: 12"),
+                                                    Text("Bed Rooms: " +
+                                                        widget
+                                                            .property
+                                                            .otherDetails
+                                                            .bedroom),
                                                   ],
                                                 ),
                                                 SizedBox(height: 8),
-                                                Row(
-                                                  children: [
-                                                    Icon(Icons.bathtub),
-                                                    SizedBox(width: 5),
-                                                    Text("Bathroom: 10"),
-                                                  ],
+                                                Container(
+                                                  child: (widget
+                                                              .property
+                                                              .otherDetails
+                                                              .bathroom ==
+                                                          null)
+                                                      ? Row(
+                                                          children: [
+                                                            Icon(Icons.bathtub),
+                                                            SizedBox(width: 5),
+                                                            Text("Bathroom: 4"),
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          children: [
+                                                            Icon(Icons.bathtub),
+                                                            SizedBox(width: 5),
+                                                            Text("Bathroom: " +
+                                                                widget
+                                                                    .property
+                                                                    .otherDetails
+                                                                    .bathroom)
+                                                          ],
+                                                        ),
                                                 ),
                                                 SizedBox(height: 8),
                                                 Row(
                                                   children: [
                                                     Icon(Icons.directions_car),
                                                     SizedBox(width: 5),
-                                                    Text("Parking : 10"),
+                                                    Text("Parking : " +
+                                                        widget
+                                                            .property
+                                                            .otherDetails
+                                                            .parking),
                                                   ],
                                                 ),
                                               ],
@@ -624,16 +835,40 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                                                       Icons.roofing,
                                                     ),
                                                     SizedBox(width: 5),
-                                                    Text("Total Rooms: 12"),
+                                                    Text("Total Rooms: " +
+                                                        widget
+                                                            .property
+                                                            .otherDetails
+                                                            .rooms),
                                                   ],
                                                 ),
                                                 SizedBox(height: 8),
-                                                Row(
-                                                  children: [
-                                                    Icon(Icons.apartment),
-                                                    SizedBox(width: 5),
-                                                    Text("Floors: 10"),
-                                                  ],
+                                                Container(
+                                                  child: (widget
+                                                              .property
+                                                              .otherDetails
+                                                              .totalFloors ==
+                                                          null)
+                                                      ? Row(
+                                                          children: [
+                                                            Icon(Icons
+                                                                .apartment),
+                                                            SizedBox(width: 5),
+                                                            Text("Floors: --"),
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          children: [
+                                                            Icon(Icons
+                                                                .apartment),
+                                                            SizedBox(width: 5),
+                                                            Text("Floors: " +
+                                                                widget
+                                                                    .property
+                                                                    .otherDetails
+                                                                    .totalFloors),
+                                                          ],
+                                                        ),
                                                 ),
                                                 SizedBox(height: 8),
                                                 Row(
@@ -1049,7 +1284,7 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                                       height: 5,
                                     ),
                                     Text(
-                                      "City",
+                                      widget.property.propertyCity,
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     SizedBox(
@@ -1063,14 +1298,14 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                                       height: 5,
                                     ),
                                     Text(
-                                      "Total Price",
+                                      widget.property.propertyPrice.toString(),
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     SizedBox(
                                       height: 5,
                                     ),
                                     Text(
-                                      "Owner Name",
+                                      widget.property.userDetail.name,
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     SizedBox(
@@ -1170,8 +1405,53 @@ class _PropertyListsViewState extends State<PropertyListsView> {
                   //   ),
                   // ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 80),
-                    child: NewArticleView(),
+                    padding: const EdgeInsets.only(bottom: 80, top: 25),
+                    child: FlatButton(
+                      onPressed: () async {
+                        session.set("property_id", widget.property.propertyId);
+                        Navigator.push(
+                            context,
+                            // MaterialPageRoute(
+                            //     builder: (context) => PropertyListsView(property: property)));
+                            MaterialPageRoute(
+                                builder: (context) => ReportPageForm()));
+                      },
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[600],
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.red,
+                          ),
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          constraints: BoxConstraints(
+                              maxWidth: double.infinity, minHeight: 40),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.flag),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Report this property",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -1236,21 +1516,6 @@ class _PropertyListsViewState extends State<PropertyListsView> {
       ),
     );
   }
-
-  // void _showBottomSheet(BuildContext context) {
-  //   showModalBottomSheet(
-  //       context: context,
-  //       isScrollControlled: true,
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.only(
-  //             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-  //       ),
-  //       builder: (context) {
-  //         return SingleChildScrollView(
-  //           child: RequestInspection(),
-  //         );
-  //       });
-  // }
 
   void validData() async {
     int userId = await FlutterSession().get("id");

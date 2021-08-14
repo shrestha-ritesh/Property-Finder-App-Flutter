@@ -16,6 +16,7 @@ import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/config/config.dart';
 import 'package:propertyfinder/extra/maps.dart';
 import 'package:propertyfinder/models/add_property_model.dart';
+import 'package:propertyfinder/modules/home/home_page.dart';
 // import 'package:propertyfinder/models/property_model.dart';
 import '../../appBar.dart';
 
@@ -88,7 +89,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
         return AssetThumb(
           asset: asset,
           width: 120,
-          height: 120,
+          height: 430,
         );
       }),
     );
@@ -104,7 +105,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
         return AssetThumb(
           asset: asset,
           width: 120,
-          height: 120,
+          height: 430,
         );
       }),
     );
@@ -176,6 +177,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
   String roadDistanceType;
   String roadType;
   String chosenValue;
+  String chosenPropertyArea;
   List propertyType = ["Land", "Business", "Apartment", "House"];
   List propertyMeasurementType = [
     "Anna",
@@ -190,9 +192,76 @@ class _BasicPageFormState extends State<BasicPageForm> {
     "Haat",
     "Acres"
   ];
-  List dropdownContents = ["Item 1", "Item 2", "Item 3", "Item 5"];
+  List dropdownContents = [
+    "Baglung",
+    "Bandipur",
+    "Banepa",
+    "Besisahar",
+    "Bhadrapur",
+    "Bhaktapur",
+    "Bharatpur",
+    "Bidur",
+    "Biratnagar",
+    "Birendranagar",
+    "Birganj",
+    "Birgunj",
+    "Birtamode",
+    "Butwal",
+    "Chandranigahpur",
+    "Charikot",
+    "Dadeldhura",
+    "Dailekh",
+    "Damak",
+    "Damauli",
+    "Darchula",
+    "Dasharathchand",
+    "Dhangadhi",
+    "Dhankuta",
+    "Dharan",
+    "Dhulikhel",
+    "Dhunche",
+    "Dipayal-Silgadhi",
+    "Gaighat",
+    "Gaur",
+    "Gulariya",
+    "Hetauda",
+    "Ilam",
+    "Inaruwa",
+    "Itahari",
+    "Jajarkot",
+    "Jaleshwar",
+    "Janakpur",
+    "Jomsom",
+    "Jumla",
+    "Kalaiya",
+    "Kankarbhitta",
+    "Kathmandu",
+    "Khandbari",
+    "Kirtipur",
+    "Kodari",
+    "Lahan",
+    "Lalitpur",
+    "Lekhnath",
+    "Lukla",
+    "Lumbini",
+    "Madhyapur Thimi",
+    "Mahendranagar",
+    "Malangawa",
+    "Manang",
+    "Mangalsen",
+    "Mustang",
+  ];
+  List dropdownContents2 = [
+    "Province No. 1",
+    "Province No. 2",
+    "Bagmati Pradesh",
+    "Gandaki Pradesh",
+    "Province No. 5",
+    "Karnali Pradesh",
+    "Sudurpashchim Pradesh"
+  ];
   List propertyFaceList = ["East", "West", "North", "South"];
-  List roadTypeList = ["Gravelled", "Paved", "Black Toppe", "Alley"];
+  List roadTypeList = ["Gravelled", "Paved", "Black Topped", "Alley"];
   List measurementList = ["feet", "meter"];
 
   @override
@@ -270,6 +339,12 @@ class _BasicPageFormState extends State<BasicPageForm> {
                       );
                       scaffoldKey.currentState.showSnackBar(snackbar);
                       print(value.message);
+                      Future.delayed(Duration(seconds: 2), () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Homepage()));
+                      });
                     } else {
                       final snackbar = SnackBar(
                         content: Text(value.error),
@@ -423,8 +498,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 TextFormField(
                   keyboardType: TextInputType.text,
                   controller: propertyaddress,
-                  validator: (input) =>
-                      input == "" ? "Please fill the field !" : null,
+                  validator: (value) => value == null ? 'field required' : null,
                   decoration: InputDecoration(
                     // labelText: "Prp",
                     // labelStyle: TextStyle(
@@ -504,17 +578,17 @@ class _BasicPageFormState extends State<BasicPageForm> {
                       const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                   child: Center(
                     child: DropdownButtonFormField(
-                      value: chosenValue,
+                      value: chosenPropertyArea,
                       onChanged: (drpVal) {
                         setState(() {
-                          chosenValue = drpVal;
+                          chosenPropertyArea = drpVal;
                         });
                       },
                       dropdownColor: Colors.grey,
                       hint: Text("Select any areas"),
                       isExpanded: true,
                       //Adding the item of the list
-                      items: dropdownContents.map((valueItem) {
+                      items: dropdownContents2.map((valueItem) {
                         return DropdownMenuItem(
                           value: valueItem,
                           child: Text(valueItem),
@@ -739,7 +813,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
               height: 20,
             ),
             Text(
-              'Road Distance: ',
+              'Road Accessed: ',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -979,7 +1053,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
                 padding: const EdgeInsets.only(top: 8),
                 child: SingleChildScrollView(
                   child: Container(
-                    height: 150,
+                    height: 350,
                     child: buildGridView(),
                   ),
                 ),
@@ -1074,7 +1148,7 @@ class _BasicPageFormState extends State<BasicPageForm> {
         property_type: chosenPropertyType,
         property_address: propertyaddress.text,
         property_city: chosenValue,
-        property_located_area: chosenValue,
+        property_located_area: chosenPropertyArea,
         built_up_area: builtUpArea.text + " " + chosenBuiltArea,
         property_total_area: totalArea.text + " " + chosenTotalArea,
         property_face: propertyFace,

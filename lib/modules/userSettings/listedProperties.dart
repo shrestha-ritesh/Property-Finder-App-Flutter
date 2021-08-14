@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:propertyfinder/api/api_get.dart';
+import 'package:propertyfinder/api/api_service.dart';
 import 'package:propertyfinder/models/Property.dart';
 import 'package:propertyfinder/models/add_property_model.dart';
 import 'package:propertyfinder/modules/addProperty/basicForm_page.dart';
@@ -19,6 +22,7 @@ class UserListedProperty extends StatefulWidget {
 
 class _UserListedPropertyState extends State<UserListedProperty> {
   // List<Property> properties = getPropertyDetails();
+  var session = FlutterSession();
   GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   List<Datum> properties = [];
   bool _loading;
@@ -262,9 +266,11 @@ class _UserListedPropertyState extends State<UserListedProperty> {
                                 buildIconButton(
                                   Icons.delete_rounded,
                                   () {
-                                    setState(() {
-                                      properties.removeAt(index);
-                                    });
+                                    session.set("prop_id", property.propertyId);
+                                    showAlertDialog(context, index);
+                                    // setState(() {
+                                    //   properties.removeAt(index);
+                                    // });
                                   },
                                   Colors.red,
                                 )
@@ -368,6 +374,52 @@ class _UserListedPropertyState extends State<UserListedProperty> {
             FilterPage(),
           ],
         );
+      },
+    );
+  }
+
+  //Alert dialog
+  showAlertDialog(BuildContext dialogContext, int index) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text(
+        "Cancel",
+        style: TextStyle(
+          color: Colors.red,
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(dialogContext).pop();
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Yes"),
+      onPressed: () async {
+        ApiService apiService = new ApiService();
+        apiService.removeListedProperty().then((value) async {
+          if (value.success == 1) {
+            EasyLoading.showSuccess('Successfully Deleted Property!');
+            setState(() {
+              properties.removeAt(index);
+            });
+          }
+        });
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("AlertDialog"),
+      content: Text("Sure ! do you want to delete the listed property ?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
       },
     );
   }

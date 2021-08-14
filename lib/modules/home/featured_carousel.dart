@@ -184,9 +184,35 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                                               width: 5,
                                             ),
                                             Icon(
-                                              Icons.single_bed,
+                                              Icons.aspect_ratio,
                                               color: Colors.black,
                                               size: 20,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              property.propertyTotalArea,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Icon(
+                                              Icons.location_city,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              property.propertyTotalArea,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ],
                                         )
@@ -214,12 +240,12 @@ class _FeaturedCarouselState extends State<FeaturedCarousel> {
                                               color: Colors.black,
                                               size: 20,
                                             ),
-                                            Text(
-                                              property.otherDetails.bedroom,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
+                                            // Text(
+                                            //   property.otherDetails.bedroom,
+                                            //   style: TextStyle(
+                                            //     fontSize: 16,
+                                            //   ),
+                                            // ),
                                             SizedBox(
                                               width: 10,
                                             ),

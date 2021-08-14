@@ -296,29 +296,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       SizedBox(
                         height: 16,
                       ),
-                      Container(
-                        height: 50,
-                        width: 330,
-                        child: FlatButton(
-                          onPressed: () {
-                            print("connect facebook");
-                          },
-                          color: Colors.indigo.shade50,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Connect with FACEBOOK',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.indigo),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
                       SizedBox(
                         height: 30,
                       ),

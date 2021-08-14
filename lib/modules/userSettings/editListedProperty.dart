@@ -177,6 +177,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   String roadDistanceType;
   String roadType;
   String chosenValue;
+  String chosenPropertyArea;
   List propertyType = ["Land", "Business", "Apartment", "House"];
   List propertyMeasurementType = [
     "Anna",
@@ -191,27 +192,16 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     "Haat",
     "Acres"
   ];
-  List dropdownContents = ["Item 1", "Item 2", "Item 3", "Item 5"];
+  List dropdownContents = ["Kathmandu", "Bhaktapur", "Lalitpur", "Hetauda"];
+  List dropdownContents2 = [
+    "Newroad area",
+    "Kamal Pokhari area",
+    "Thapathali area",
+    "Maitighar area"
+  ];
   List propertyFaceList = ["East", "West", "North", "South"];
   List roadTypeList = ["Gravelled", "Paved", "Black Toppe", "Alley"];
   List measurementList = ["feet", "meter"];
-
-  @override
-  void intitState() {
-    super.initState();
-    selectRadio = '';
-    //For easy loading (can be removed mark *)
-    EasyLoading.addStatusCallback((status) {
-      print('EasyLoading Status $status');
-      if (status == EasyLoadingStatus.dismiss) {
-        _timer?.cancel();
-      }
-    });
-
-    print(widget.property);
-
-    //EasyLoading.showSuccess('Use in initState');
-  }
 
   setSelectedRadio(String val) {
     setState(() {
@@ -232,13 +222,15 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
   getPropertyData() {
     setState(() {
       selectRadio = widget.property.propertyStatus;
-
       latitude.text = widget.property.latitude;
       longitude.text = widget.property.longitude;
       builtDate.text = widget.property.otherDetails.builtYear;
       totalFloors.text = widget.property.otherDetails.totalFloors;
       rooms.text = widget.property.otherDetails.rooms;
       bathroom.text = widget.property.otherDetails.bathroom;
+      builtUpArea.text = widget.property.builtUpArea;
+      totalArea.text = widget.property.propertyTotalArea;
+      roadDistance.text = widget.property.roadDistance;
       kitchen.text = widget.property.otherDetails.kitchen;
       garage.text = widget.property.otherDetails.parking;
       livingroom.text = widget.property.otherDetails.livingRoom;
@@ -248,6 +240,29 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
       bedroom.text = widget.property.otherDetails.bedroom;
       propertyaddress.text = widget.property.propertyAddress;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      getPropertyData();
+    });
+
+    selectRadio = '';
+
+    //For easy loading (can be removed mark *)
+    EasyLoading.addStatusCallback((status) {
+      print('EasyLoading Status $status');
+      if (status == EasyLoadingStatus.dismiss) {
+        _timer?.cancel();
+      }
+    });
+
+    print(widget.property);
+
+    //EasyLoading.showSuccess('Use in initState');
   }
 
   @override
@@ -502,11 +517,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                 validator: (input) =>
                     input == "" ? "Please fill the field !" : null,
                 decoration: InputDecoration(
-                  // labelText: "Prp",
-                  // labelStyle: TextStyle(
-                  //   fontSize: 14,
-                  //   color: Colors.grey.shade400,
-                  // ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(2),
                     borderSide: BorderSide(
@@ -540,10 +550,12 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                 child: Center(
                   child: DropdownButtonFormField(
-                    value: chosenValue,
+                    value: chosenPropertyArea,
+                    validator: (value) =>
+                        value == null ? 'property city required' : null,
                     onChanged: (drpVal) {
                       setState(() {
-                        chosenValue = drpVal;
+                        chosenPropertyArea = drpVal;
                       });
                     },
                     dropdownColor: Colors.grey,
@@ -579,6 +591,8 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                 child: Center(
                   child: DropdownButtonFormField(
                     value: chosenValue,
+                    validator: (value) =>
+                        value == null ? 'located Area required' : null,
                     onChanged: (drpVal) {
                       setState(() {
                         chosenValue = drpVal;
@@ -588,7 +602,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                     hint: Text("Select any areas"),
                     isExpanded: true,
                     //Adding the item of the list
-                    items: dropdownContents.map((valueItem) {
+                    items: dropdownContents2.map((valueItem) {
                       return DropdownMenuItem(
                         value: valueItem,
                         child: Text(valueItem),
@@ -650,6 +664,8 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                           TextFormField(
                             decoration: InputDecoration(labelText: "e.g. 12"),
                             controller: latitude,
+                            validator: (value) =>
+                                value == "" ? 'latitude required' : null,
                           ),
                         ],
                       ),
@@ -665,6 +681,8 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                           TextFormField(
                             decoration: InputDecoration(labelText: "e.g. 12"),
                             controller: longitude,
+                            validator: (value) =>
+                                value == "" ? 'Longitude required' : null,
                           ),
                         ],
                       ),
@@ -698,6 +716,8 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                 child: TextFormField(
                   decoration: InputDecoration(labelText: "e.g. 12"),
                   controller: builtUpArea,
+                  validator: (value) =>
+                      value == "" ? 'Buit-up Area required' : null,
                 ),
               ),
               SizedBox(
@@ -742,8 +762,10 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
             children: [
               Flexible(
                 child: TextFormField(
-                  decoration: InputDecoration(labelText: "e.g. 12"),
-                  controller: totalArea,
+                  decoration: InputDecoration(
+                      labelText: "Total Area", hintText: "e.g. 12"),
+                  validator: (value) =>
+                      value == "" ? 'total area required' : null,
                 ),
               ),
               SizedBox(
@@ -823,6 +845,8 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
               TextFormField(
                 decoration: InputDecoration(hintText: "eg. 10 ft"),
                 controller: roadDistance,
+                validator: (value) =>
+                    value == "" ? 'Road Distance required' : null,
               ),
               SizedBox(
                 height: 10,
@@ -943,6 +967,8 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                       decoration: InputDecoration(labelText: "Rooms"),
                       keyboardType: TextInputType.number,
                       controller: rooms,
+                      validator: (value) =>
+                          value == null ? 'Road Distance required' : null,
                     ),
                   ),
                   SizedBox(
@@ -1032,7 +1058,20 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
               child: SingleChildScrollView(
                 child: Container(
                   height: 150,
-                  child: buildGridView(),
+                  child: (images.length <= 0)
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Select the picture of the property",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ],
+                        )
+                      : buildGridView(),
                 ),
               ),
             ),
@@ -1055,15 +1094,21 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
           TextFormField(
             decoration: InputDecoration(labelText: "Property Title"),
             controller: propertyTitle,
+            validator: (value) =>
+                value == "" ? 'Property Title required' : null,
           ),
           TextFormField(
             decoration: InputDecoration(labelText: "Property Description"),
+            validator: (value) =>
+                value == "" ? 'Porperty Description is required' : null,
             maxLines: 5,
             controller: propertyDescription,
           ),
           TextFormField(
             decoration: InputDecoration(labelText: "Property Price"),
             controller: propertyPrice,
+            validator: (value) =>
+                value == "" ? 'property price is required' : null,
           ),
           SizedBox(
             height: 30,
@@ -1093,8 +1138,9 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
         property_address: (propertyaddress.text) == null
             ? widget.property.propertyAddress
             : propertyaddress.text,
-        property_city:
-            (chosenValue) == null ? widget.property.propertyCity : chosenValue,
+        property_city: (chosenPropertyArea) == null
+            ? widget.property.propertyCity
+            : chosenPropertyArea,
         property_located_area: (chosenValue) == ""
             ? widget.property.propertyLocatedArea
             : chosenValue,
@@ -1172,7 +1218,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     );
     // set up the AlertDialog
     CupertinoAlertDialog alert = CupertinoAlertDialog(
-      title: Text("AlertDialog"),
+      title: Text("Delete Property"),
       content: Text(
           "Would you like to continue learning how to use Flutter alerts?"),
       actions: [

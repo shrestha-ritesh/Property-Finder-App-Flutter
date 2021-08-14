@@ -127,3 +127,18 @@ class UpdateResponse {
         success: json["success"] != null ? json["success"] : "");
   }
 }
+
+class DeleteResponse {
+  final String error;
+  final String message;
+  final int success;
+
+  DeleteResponse({this.error, this.message, this.success});
+
+  factory DeleteResponse.fromJson(Map<String, dynamic> json) {
+    return DeleteResponse(
+        message: json["message"] != null ? json["message"] : "",
+        error: json["error"] != null ? json["error"] : "",
+        success: json["success"] != null ? json["success"] : "");
+  }
+}

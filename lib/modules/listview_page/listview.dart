@@ -345,16 +345,6 @@ class _ListViewPageState extends State<ListViewPage> {
               ),
             ),
             Container(
-              // decoration: BoxDecoration(
-              //     color: Colors.white,
-              //     borderRadius: BorderRadius.circular(20.0),
-              //     boxShadow: [
-              //       BoxShadow(
-              //         color: Colors.black26,
-              //         offset: Offset(0.0, 2.0),
-              //         blurRadius: 6.0,
-              //       )
-              //     ]),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -362,11 +352,7 @@ class _ListViewPageState extends State<ListViewPage> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Icon(
-                          Icons.attach_money,
-                          color: Colors.black,
-                          size: 20,
-                        ),
+                        Text("Rs  "),
                         SizedBox(
                           width: 5,
                         ),

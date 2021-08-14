@@ -5,6 +5,7 @@ import 'package:propertyfinder/extra/maps.dart';
 import 'package:propertyfinder/models/User.dart';
 import 'package:propertyfinder/modules/login_page.dart';
 import 'package:propertyfinder/modules/profile/editProfile.dart';
+import 'package:propertyfinder/modules/userSettings/changePassword.dart';
 import 'package:propertyfinder/modules/userSettings/listedProperties.dart';
 import 'package:propertyfinder/modules/userSettings/userProfile.dart';
 
@@ -141,6 +142,8 @@ class _ApplicationSettingsState extends State<ApplicationSettings> {
           }),
           listButtons("Change Password", Icons.lock, () {
             print("Change password");
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ChangePassword()));
           }),
           listButtons("Listed Properties", Icons.home_sharp, () {
             print("Listed properties");
