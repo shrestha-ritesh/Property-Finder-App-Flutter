@@ -17,4 +17,4 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ## WITH BACKEND IN NODE JS:
-- please find the backend for the application here -->: https://github.com/shrestha-ritesh/property-backend
+- please find the backend for the application here -->: https://github.com/shrestha-ritesh/property-backend.git
